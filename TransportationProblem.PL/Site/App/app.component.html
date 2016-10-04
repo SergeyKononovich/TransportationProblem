@@ -1,0 +1,45 @@
+﻿<div class="main-container">
+    <mdl-layout #toolbarLayout="mdlLayout" mdl-layout-fixed-header class="mdl-layout--no-desktop-drawer-button">
+        <mdl-layout-header>
+            <mdl-layout-header-row>
+                <mdl-layout-title>Transportation</mdl-layout-title>
+
+                <mdl-layout-spacer></mdl-layout-spacer>
+
+                <nav class="mdl-navigation" *hideItBootstrap="['xs','sm']">
+                    <a class="mdl-navigation__link" *ngFor="let menuItem of menuItems"
+                        [routerLink]="[menuItem.routerLink]"
+                        [routerLinkActive]="['lt-active-link']">
+                        {{menuItem.title}}
+                    </a>
+                </nav>
+
+                <mdl-layout-spacer></mdl-layout-spacer>
+                <mdl-layout-spacer></mdl-layout-spacer>
+                <mdl-layout-spacer></mdl-layout-spacer>
+                <mdl-layout-spacer></mdl-layout-spacer>
+                <mdl-layout-spacer></mdl-layout-spacer>
+                <mdl-layout-spacer></mdl-layout-spacer>
+
+            </mdl-layout-header-row>
+        </mdl-layout-header>
+
+        <mdl-layout-drawer>
+            <mdl-layout-title>Transportation</mdl-layout-title>
+
+            <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" *ngFor="let menuItem of menuItems"
+                    [routerLink]="[menuItem.routerLink]"
+                    [routerLinkActive]="['lt-active-link']"
+                    (click)="toolbarLayout.closeDrawer()">
+                    {{menuItem.title}}
+                </a>
+            </nav>
+        </mdl-layout-drawer>
+
+        <mdl-layout-content>
+            <router-outlet></router-outlet>
+        </mdl-layout-content>
+
+    </mdl-layout>
+</div>

@@ -1,0 +1,15 @@
+﻿@mixin img-circle($width) {
+    width: $width;
+    height: $width;
+    line-height: $width;
+    -webkit-border-radius: $width/2;
+    -moz-border-radius: $width/2;
+    border-radius: $width/2;
+}
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Material Icons'), local('MaterialIcons-Regular'), url('../Fonts/material-icons.woff2') format('woff2');
+}

@@ -1,0 +1,45 @@
+﻿@import "_variables.scss";
+@import "_mixins.scss";
+
+
+////////// breakpoints //////////
+// phone
+@media (max-width: $tablet-breakpoint - 1) {
+    .lt-hide-phone {
+        display: none !important;
+    }
+    .lt-phone {
+
+    }
+}
+// tablet
+@media (min-width: $tablet-breakpoint) and (max-width: $desktop-breakpoint - 1) {
+    .lt-hide-tablet {
+        display: none !important;
+    }
+}
+// desktop
+@media (min-width: $desktop-breakpoint) {
+    lt-hide-desktop {
+        display: none !important;
+    }
+}
+
+
+////////// classes //////////
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+

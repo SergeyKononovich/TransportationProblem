@@ -1,0 +1,39 @@
+﻿@import '../Content/Styles/site.scss';
+@import '../Content/Styles/_variables.scss';
+@import '../Content/Styles/_mixins.scss';
+
+
+mdl-layout-header-row {
+    mdl-layout-title {
+        font-size: x-large;
+    }
+    .mdl-navigation__link {
+        font-size: medium;
+        &.lt-active-link {
+            margin-bottom: 3px;
+            border-bottom: 3px solid $active-link-border-color;
+        }
+    }
+    .mdl-navigation__link:hover {
+        margin-bottom: 3px;
+        border-bottom: 3px solid $active-link-border-color;
+    }
+}
+
+mdl-layout-drawer {
+    mdl-layout-title {
+        padding-bottom: 0;
+        border-bottom: 0;
+        margin-bottom: 0;
+        font-size: x-large;
+    }
+    .mdl-navigation__link {
+        &.lt-active-link {
+            border-left: 3px solid $active-link-border-color;
+        }
+    }
+    .mdl-navigation__link:hover {
+        margin-bottom: 3px;
+        border-bottom: 3px solid $active-link-border-color;
+    }
+}
