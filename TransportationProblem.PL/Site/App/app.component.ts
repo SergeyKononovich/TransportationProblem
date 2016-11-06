@@ -1,4 +1,5 @@
-﻿import { Component, OnInit, ViewEncapsulation }    from '@angular/core';
+﻿import { Component, OnInit, ViewEncapsulation, ViewContainerRef }    from '@angular/core';
+import { MdlDialogOutletService } from 'angular2-mdl';
 
 
 interface MenuItem {
@@ -16,15 +17,20 @@ export class AppComponent implements OnInit {
     menuItems: MenuItem[];
 
 
+    constructor(private dialogService: MdlDialogOutletService, private vcRef: ViewContainerRef) {
+        dialogService.setDefaultViewContainerRef(vcRef);
+    }
+
+
     ngOnInit() {
         this.menuItems = [
             {
-                title: "BaseForm",
-                routerLink: "/BaseForm"
+                title: "Транспортная задача",
+                routerLink: "/TransportationProblem"
             },
             {
-                title: "NetworkForm",
-                routerLink: "/NetworkForm"
+                title: "Чет ещё",
+                routerLink: "/Чет ещё"
             }
         ];
     }

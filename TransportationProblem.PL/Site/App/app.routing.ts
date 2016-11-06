@@ -1,23 +1,18 @@
 ﻿import { ModuleWithProviders }  from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { BaseFormComponent } from './base-form.component';
-import { NetworkFormComponent } from './network-form.component';
+import { TransportationProblem } from './TransportationProblem/transportation-problem.component';
 
 
 const appRoutes: Routes = [
     {
         path: '',
-        redirectTo: '/BaseForm',
+        redirectTo: '/TransportationProblem',
         pathMatch: 'full'
     },
     {
-        path: 'BaseForm',
-        component: BaseFormComponent
-    },
-    {
-        path: 'NetworkForm',
-        component: NetworkFormComponent
+        path: 'TransportationProblem',
+        component: TransportationProblem
     }
 ];
 

@@ -1,29 +1,25 @@
 ﻿import { NgModule }             from '@angular/core';
 import { BrowserModule }        from '@angular/platform-browser';
+import { FormsModule }          from '@angular/forms';
 import { MdlModule }            from 'angular2-mdl';
 import { ResponsiveModule }     from 'ng2-responsive';
 
-import { AppComponent }         from './app.component';
-import { BaseFormComponent } from './base-form.component';
-import { NetworkFormComponent } from './network-form.component';
-import { appRoutingModule }     from './app.routing';
-import { AlgorithmService }     from '../Services/algorithm.service';
+import { AppComponent }             from './app.component';
+import { TransportationProblem }    from './TransportationProblem/transportation-problem.component';
+import { appRoutingModule }         from './app.routing';
 
 
 @NgModule({
     imports: [
         BrowserModule,
+        FormsModule,
         MdlModule,
         ResponsiveModule,
         appRoutingModule
     ],
     declarations: [
         AppComponent,
-        BaseFormComponent,
-        NetworkFormComponent
-    ],
-    providers: [
-        AlgorithmService
+        TransportationProblem
     ],
     bootstrap: [AppComponent]
 })

@@ -121,14 +121,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="Site\App\base-form.component.ts" />
-    <TypeScriptCompile Include="Site\App\network-form.component.ts" />
+    <TypeScriptCompile Include="Site\App\TransportationProblem\transportation-problem.component.ts" />
     <TypeScriptCompile Include="Site\App\app.component.ts" />
     <TypeScriptCompile Include="Site\App\app.module.ts" />
     <TypeScriptCompile Include="Site\App\app.routing.ts" />
     <TypeScriptCompile Include="Site\main.ts" />
+    <TypeScriptCompile Include="Site\Modules\TransportationProblem\uniqueSet.ts" />
+    <TypeScriptCompile Include="Site\Modules\TransportationProblem\iUniqueSet.ts" />
+    <TypeScriptCompile Include="Site\Modules\TransportationProblem\iEquatable.ts" />
+    <TypeScriptCompile Include="Site\Modules\TransportationProblem\guid.ts" />
+    <TypeScriptCompile Include="Site\Modules\TransportationProblem\network.ts" />
+    <TypeScriptCompile Include="Site\Modules\TransportationProblem\arc.ts" />
+    <TypeScriptCompile Include="Site\Modules\TransportationProblem\vertex.ts" />
     <TypeScriptCompile Include="Site\polyfills.ts" />
-    <TypeScriptCompile Include="Site\Services\algorithm.service.ts" />
+    <TypeScriptCompile Include="Site\Modules\transportation-problem.ts" />
     <TypeScriptCompile Include="Site\vendor.ts" />
   </ItemGroup>
   <ItemGroup>
@@ -144,11 +150,9 @@
   <ItemGroup>
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Site\App\base-form.component.html" />
-    <Content Include="Site\App\network-form.component.scss" />
-    <Content Include="Site\App\base-form.component.scss" />
+    <Content Include="Site\App\TransportationProblem\transportation-problem.component.scss" />
     <None Include="Site\App\app.component.scss" />
-    <Content Include="Site\App\network-form.component.html" />
+    <Content Include="Site\App\TransportationProblem\transportation-problem.component.html" />
     <Content Include="Site\App\app.component.html" />
     <Content Include="Site\Content\Images\pig.jpg" />
     <Content Include="Site\Content\Styles\site.scss" />
@@ -177,9 +181,7 @@
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Site\Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="typings.json" />
   </ItemGroup>

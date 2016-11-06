@@ -1,0 +1,68 @@
+﻿@import '../../Content/Styles/_variables.scss';
+@import '../../Content/Styles/_mixins.scss';
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    .condition-area-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        background-color: #ADEAEA;
+        width: 100%;
+        min-height: 400px;
+        padding: 20px;
+        .condition-area-title {
+            margin-bottom: 10px;
+            color: #5F9F9F;
+        }
+        .condition-area {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: stretch;
+            .vertex-area-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: stretch;
+                background-color: #ADEAEA;
+                min-height: 400px;
+                padding: 10px;
+                .vertex-area-title {
+                    font-size: medium;
+                    margin-bottom: 8px;
+                    color: #5F9F9F;
+                } 
+                .vertex-area {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                    .add-vertex-area {        
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: flex-start;
+                        align-items: center;
+                        .input-element {
+                            width: 200px;
+                            margin: 4px;
+                            color: #5F9F9F;
+                        }
+                        .mdl-checkbox.is-checked {
+                            .mdl-checkbox__tick-outline {
+                                background: $active-link-border-color;
+                            }
+                        }
+                        .add-vertex-button {
+                            background: $active-link-border-color;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

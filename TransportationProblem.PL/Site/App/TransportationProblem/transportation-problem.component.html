@@ -1,0 +1,32 @@
+﻿<div class="page-container">
+    <div class="condition-area-container">
+        <mdl-layout-title class="condition-area-title">Условие</mdl-layout-title>
+
+        <div class="condition-area">
+            <div class="vertex-area-container" mdl-shadow="4">
+                <mdl-layout-title class="vertex-area-title">Участники</mdl-layout-title>
+
+                <div class="vertex-area">
+                    <div class="add-vertex-area">
+                        <mdl-textfield class="input-element" type="text" label="Название" [(ngModel)]="_newVertex.name" floating-label></mdl-textfield>
+                        <mdl-textfield class="input-element" type="text"
+                            label="Мощность"
+                            pattern="-?[0-9]*(\.[0-9]+)?"
+                            error-msg="Input is not a number!"
+                            [(ngModel)]="_newVertex.power"
+                            floating-label>
+                        </mdl-textfield>
+                        <mdl-switch class="input-element" [(ngModel)]="_newVertex.priority">Есть приоритет</mdl-switch>
+                        <button class="add-vertex-button" (click)="addNewVertex()" mdl-button mdl-button-type="mini-fab" mdl-ripple>
+                            <mdl-icon>add</mdl-icon>
+                        </button>
+                    </div>
+                    <mdl-table mdl-shadow="2" [table-model]="verticesTableModel"></mdl-table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <dialog-outlet></dialog-outlet>
+</div>

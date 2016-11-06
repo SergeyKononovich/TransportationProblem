@@ -2,12 +2,22 @@
 @import '../Content/Styles/_variables.scss';
 @import '../Content/Styles/_mixins.scss';
 
+.mdl-layout__header {
+    min-height: 45px;
+    height: 45px;
+    .mdl-layout__header-row {
+        min-height: 45px;
+        height: 45px;
+    }
+}
 
 mdl-layout-header-row {
     mdl-layout-title {
         font-size: x-large;
     }
     .mdl-navigation__link {
+        min-height: 45px;
+        height: 48px;
         font-size: medium;
         &.lt-active-link {
             margin-bottom: 3px;
