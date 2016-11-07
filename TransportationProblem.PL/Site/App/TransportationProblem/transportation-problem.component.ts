@@ -1,7 +1,10 @@
-﻿import { Component, OnInit }    from '@angular/core';
+﻿import { Component, ElementRef, ViewChild }    from '@angular/core';
 import { MdlDefaultTableModel, MdlDialogService, IMdlTableModelItem } from 'angular2-mdl';
 import { Dictionary }           from 'typescript-collections/dist/lib';
 import * as Arrays              from 'typescript-collections/dist/lib/arrays';
+
+var Cytoscape = require('cytoscape');
+var regCose = require('cytoscape-cose-bilkent/src');
 
 import { Network, Vertex, Arc } from '../../Modules/transportation-problem';
 
@@ -49,10 +52,9 @@ class TableArc implements IMdlTableModelItem {
     templateUrl: './transportation-problem.component.html',
     styleUrls: ['./transportation-problem.component.scss']
 })
-export class TransportationProblem implements OnInit {
+export class TransportationProblem {
     // Vertecies area
     private _newVertex = new TableVertex();
-    //private _vertices = new Dictionary<string, Vertex>();
     private _verticesTableModel = new MdlDefaultTableModel([
         { key: 'name', name: 'Название', sortable: true },
         { key: 'power', name: 'Мощность', sortable: true, numeric: true },
@@ -69,13 +71,48 @@ export class TransportationProblem implements OnInit {
     ]);
     private _isArcsDeleteButtonVisible: boolean = false;
 
+    // Graph area
+    @ViewChild('graphCanvas')
+    private _graphCanvas: ElementRef; 
+    private _graph: any;
+
 
     constructor(private _dialogService: MdlDialogService) {
     }
 
 
-    ngOnInit() {
+    ngAfterViewInit(): void {
+        this._graph = Cytoscape({
 
+            container: this._graphCanvas.nativeElement, // container to render in
+
+            style: [ // the stylesheet for the graph
+                {
+                    selector: 'node',
+                    style: {
+                        'background-color': '#666',
+                        'label': 'data(id)',
+                        'text-rotation': 'autorotate'
+                    }
+                },
+
+                {
+                    selector: 'edge',
+                    style: {
+                        'width': 3,
+                        'label': 'data(rate)',
+                        'text-margin-y': -10,
+                        'text-rotation': 'autorotate',
+                        'curve-style': 'bezier',
+                        'line-color': '#536d6d',
+                        'target-arrow-color': '#536d6d',
+                        'target-arrow-shape': 'triangle'
+                    }
+                }
+            ]
+        });
+
+        regCose(Cytoscape);
     }
 
 
@@ -171,11 +208,32 @@ export class TransportationProblem implements OnInit {
         this._arcsTableModel.data.push(this._newArc.copy());
 
         this.emptyNewArc();
+
+        this.renderGraph();
     }
 
     private validateNewArc(): boolean {
 
-        
+        if (this._newArc.source === '') {
+            this._dialogService.alert("Отправитель не указан!", "Да понял я, понял!", "Ошибка");
+            return false;
+        }
+
+        if (this._newArc.slink === '') {
+            this._dialogService.alert("Получатель не указан!", "Да понял я, понял!", "Ошибка");
+            return false;
+        }
+
+        if (this._newArc.rate.trim() === '') {
+            this._dialogService.alert("Не задано поле 'ставка'!", "Да понял я, понял!", "Ошибка");
+            return false;
+        }
+
+        let rate: number = +this._newArc.rate;
+        if (isNaN(rate) || rate === 0) {
+            this._dialogService.alert("Поле 'ставка' должно быть числом!", "Да понял я, понял!", "Ошибка");
+            return false;
+        }
 
         return true;
     }
@@ -201,6 +259,32 @@ export class TransportationProblem implements OnInit {
     private getDataForArcSlinkSelector(): IMdlTableModelItem[] {
         return this._verticesTableModel.data.filter((vert: TableVertex) =>
             vert.name !== this._newArc.source &&
-            !this._arcsTableModel.data.some((arc: TableArc) => arc.source === vert.name || arc.slink === vert.name));
+            !this._arcsTableModel.data.some((arc: TableArc) => arc.source === this._newArc.source && arc.slink === vert.name));
     } 
+
+
+    // Graph area
+    private renderGraph(): void {
+        
+        this._graph.remove(this._graph.elements("*"));
+
+        for (let el of this._verticesTableModel.data) {
+            let vert = el as TableVertex;
+            this._graph.add([
+                { group: "nodes", data: { id: vert.name } }
+            ]);
+        }
+
+        for (let el of this._arcsTableModel.data) {
+            let arc = el as TableArc;
+            this._graph.add([
+                { group: "edges", data: { id: arc.source + arc.slink, source: arc.source, target: arc.slink, rate: arc.rate } }
+            ]);
+        }
+
+        this._graph.layout({
+            name: 'cose-bilkent',
+            padding: 60
+        });
+    }
 }

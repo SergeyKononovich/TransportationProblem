@@ -125,7 +125,7 @@
                             color: $condition-area-title-text-color;
                         }
                         .add-arc-button {
-                            margin-bottom: 5px;
+                            margin-bottom: 4px;
                             margin-left: 100px;
                             background: $action-button-color;
                             color: $condition-area-title-text-color;
@@ -143,6 +143,34 @@
                         margin-top: 5px;
                         background: $action-button-color;
                         color: $condition-area-title-text-color;
+                    }
+                }
+            }
+
+            
+            .graph-area-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: stretch;
+                min-height: 400px;
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 10px;
+                background-color: $condition-area-accent-color;
+                .graph-area-title {
+                    font-size: medium;
+                    margin-bottom: 8px;
+                    color: $condition-area-title-text-color;
+                } 
+                .graph-area {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                    .graph-canvas {
+                        width: 100%;
+                        height: 400px;
                     }
                 }
             }

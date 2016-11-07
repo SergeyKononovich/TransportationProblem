@@ -23,3 +23,7 @@ import { MdlSelectModule }  from '@angular2-mdl-ext/select';
 
 // ng2-responsive
 import { ResponsiveModule } from 'ng2-responsive';
+
+// graphdracula
+require('cytoscape');
+require('cytoscape-cose-bilkent/src');
