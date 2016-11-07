@@ -14,7 +14,8 @@
     "useWebpackText": true
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "**/*.spec.ts"
   ],
   "compileOnSave": false,
   "buildOnSave": false

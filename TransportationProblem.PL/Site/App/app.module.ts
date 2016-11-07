@@ -2,6 +2,7 @@
 import { BrowserModule }        from '@angular/platform-browser';
 import { FormsModule }          from '@angular/forms';
 import { MdlModule }            from 'angular2-mdl';
+import { MdlSelectModule }      from '@angular2-mdl-ext/select';
 import { ResponsiveModule }     from 'ng2-responsive';
 
 import { AppComponent }             from './app.component';
@@ -14,6 +15,7 @@ import { appRoutingModule }         from './app.routing';
         BrowserModule,
         FormsModule,
         MdlModule,
+        MdlSelectModule,
         ResponsiveModule,
         appRoutingModule
     ],

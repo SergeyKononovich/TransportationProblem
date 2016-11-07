@@ -19,6 +19,7 @@ import 'primeng/primeng';
 
 // angular2-mdl
 import { MdlModule }        from 'angular2-mdl';
+import { MdlSelectModule }  from '@angular2-mdl-ext/select';
 
 // ng2-responsive
 import { ResponsiveModule } from 'ng2-responsive';

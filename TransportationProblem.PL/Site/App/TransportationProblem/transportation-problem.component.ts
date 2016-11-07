@@ -1,6 +1,6 @@
 ﻿import { Component, OnInit }    from '@angular/core';
 import { MdlDefaultTableModel, MdlDialogService, IMdlTableModelItem } from 'angular2-mdl';
-//import { Dictionary }           from 'typescript-collections/dist/lib';
+import { Dictionary }           from 'typescript-collections/dist/lib';
 import * as Arrays              from 'typescript-collections/dist/lib/arrays';
 
 import { Network, Vertex, Arc } from '../../Modules/transportation-problem';
@@ -25,6 +25,25 @@ class TableVertex implements IMdlTableModelItem {
 }
 
 
+class TableArc implements IMdlTableModelItem {
+    public source: string = '';
+    public slink: string = '';
+    public rate: string = '';
+    public selected: boolean = false;
+
+
+    public copy(): TableArc {
+        let copy = new TableArc();
+        copy.source = this.source;
+        copy.slink = this.slink;
+        copy.rate = this.rate;
+        copy.selected = this.selected;
+
+        return copy;
+    }
+}
+
+
 @Component({
     selector: 'transportation-problem-component',
     templateUrl: './transportation-problem.component.html',
@@ -32,7 +51,8 @@ class TableVertex implements IMdlTableModelItem {
 })
 export class TransportationProblem implements OnInit {
     // Vertecies area
-    private _newVertex: TableVertex = new TableVertex();
+    private _newVertex = new TableVertex();
+    //private _vertices = new Dictionary<string, Vertex>();
     private _verticesTableModel = new MdlDefaultTableModel([
         { key: 'name', name: 'Название', sortable: true },
         { key: 'power', name: 'Мощность', sortable: true, numeric: true },
@@ -41,6 +61,13 @@ export class TransportationProblem implements OnInit {
     private _isVerticesDeleteButtonVisible: boolean = false;
 
     // Arcs area
+    private _newArc = new TableArc();
+    private _arcsTableModel = new MdlDefaultTableModel([
+        { key: 'source', name: 'Отправитель', sortable: true },
+        { key: 'slink', name: 'Получатель', sortable: true },
+        { key: 'rate', name: 'Ставка', sortable: true, numeric: true }
+    ]);
+    private _isArcsDeleteButtonVisible: boolean = false;
 
 
     constructor(private _dialogService: MdlDialogService) {
@@ -53,11 +80,19 @@ export class TransportationProblem implements OnInit {
 
 
     // Vertecies area
+    private emptyNewVertex(): void {
+        this._newVertex.name = '';
+        this._newVertex.power = '';
+        this._newVertex.priority = false;
+    }
+
     private addNewVertex(): void {
         if (!this.validateNewVertex())
             return;
 
         this._verticesTableModel.data.push(this._newVertex.copy());
+
+        this.emptyNewVertex();
     }
 
     private validateNewVertex(): boolean {
@@ -87,11 +122,29 @@ export class TransportationProblem implements OnInit {
     }
 
     private deleteSelectedVertices(): void {
+        // Get all selected vertices
         let selectedVertecies = this._verticesTableModel.data.filter(value => value.selected);
+
+        // Get all related arcs
+        let relatedArcs = this._arcsTableModel.data.filter((arc: TableArc) => {
+            return selectedVertecies.some((vert: TableVertex) =>
+                vert.name === arc.source || vert.name === arc.slink);
+        });
+        
+        // Delete selected vertices
         for (let vertex of selectedVertecies)
-            if (vertex.selected) Arrays.remove(this._verticesTableModel.data, vertex);
+            Arrays.remove(this._verticesTableModel.data, vertex);
+
+
+        // Delete related arcs
+        for (let arc of relatedArcs)
+            Arrays.remove(this._arcsTableModel.data, arc);
 
         this.recalcVisibilityOfVerticesDeleteButton();
+        this.recalcVisibilityOfArcsDeleteButton();
+
+        // Empty newArc
+        this.emptyNewArc();
     }
 
     private verticesTableSelectionChanged(event: any): void {
@@ -105,4 +158,49 @@ export class TransportationProblem implements OnInit {
 
 
     // Arcs area
+    private emptyNewArc(): void {
+        this._newArc.source = '';
+        this._newArc.slink = '';
+        this._newArc.rate = '';
+    }
+
+    private addNewArc(): void {
+        if (!this.validateNewArc())
+            return;
+
+        this._arcsTableModel.data.push(this._newArc.copy());
+
+        this.emptyNewArc();
+    }
+
+    private validateNewArc(): boolean {
+
+        
+
+        return true;
+    }
+
+    private deleteSelectedArcs(): void {
+        let selectedArcs = this._arcsTableModel.data.filter(value => value.selected);
+        for (let arc of selectedArcs) {
+            Arrays.remove(this._arcsTableModel.data, arc);
+        }
+
+        this.recalcVisibilityOfArcsDeleteButton();
+    }
+
+    private arcsTableSelectionChanged(event: any): void {
+        this.recalcVisibilityOfArcsDeleteButton();
+    }
+
+    private recalcVisibilityOfArcsDeleteButton(): void {
+        this._isArcsDeleteButtonVisible = this._arcsTableModel
+            .data.some((value: IMdlTableModelItem) => value.selected);
+    }
+
+    private getDataForArcSlinkSelector(): IMdlTableModelItem[] {
+        return this._verticesTableModel.data.filter((vert: TableVertex) =>
+            vert.name !== this._newArc.source &&
+            !this._arcsTableModel.data.some((arc: TableArc) => arc.source === vert.name || arc.slink === vert.name));
+    } 
 }

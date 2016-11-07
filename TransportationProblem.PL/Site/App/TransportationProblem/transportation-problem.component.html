@@ -10,8 +10,7 @@
                         <mdl-textfield class="input-element" type="text" label="Название"
                             [(ngModel)]="_newVertex.name" 
                             floating-label></mdl-textfield>
-                        <mdl-textfield class="input-element" type="text"
-                            label="Мощность"
+                        <mdl-textfield class="input-element" type="text" label="Мощность"
                             pattern="-?[0-9]*(\.[0-9]+)?"
                             error-msg="Должно быть число!"
                             [(ngModel)]="_newVertex.power"
@@ -33,19 +32,23 @@
             </div>
 
             <div class="arc-area-container" mdl-shadow="4">
-                <mdl-layout-title class="arc-area-title">Участники</mdl-layout-title>
+                <mdl-layout-title class="arc-area-title">Связи</mdl-layout-title>
                 <div class="arc-area">
                     <div class="add-arc-area" mdl-shadow="2">
-                        <mdl-textfield class="input-element" type="text" label="Название"
-                                       [(ngModel)]="_newArc.name"
-                                       floating-label></mdl-textfield>
-                        <mdl-textfield class="input-element" type="text"
-                                       label="Мощность"
+                        <mdl-select class="input-selector" [(ngModel)]="_newArc.source" placeholder="Отправитель">
+                            <mdl-option [value]><em>Отмена</em></mdl-option>
+                            <mdl-option *ngFor="let c of _verticesTableModel.data" [value]="c.name">{{c.name}}</mdl-option>
+                        </mdl-select>
+                        <mdl-select class="input-selector" [(ngModel)]="_newArc.slink" placeholder="Получатель">
+                            <mdl-option [value]><em>Отмена</em></mdl-option>
+                            <mdl-option *ngFor="let c of getDataForArcSlinkSelector()" 
+                                        [value]="c.name">{{c.name}}</mdl-option>
+                        </mdl-select>
+                        <mdl-textfield class="input-element" type="text" label="Ставка"
                                        pattern="-?[0-9]*(\.[0-9]+)?"
                                        error-msg="Должно быть число!"
-                                       [(ngModel)]="_newArc.power"
+                                       [(ngModel)]="_newArc.rate"
                                        floating-label></mdl-textfield>
-                        <mdl-switch class="input-element" [(ngModel)]="_newArc.priority">Есть приоритет</mdl-switch>
                         <button class="add-arc-button" (click)="addNewArc()" mdl-button mdl-button-type="raised">
                             Добавить
                         </button>
@@ -55,7 +58,7 @@
                                           (table-model-selectionChanged)="arcsTableSelectionChanged($event)"></mdl-table-selectable>
                     <button class="delete-selected-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
                             *ngIf="_isArcsDeleteButtonVisible"
-                            (click)="deleteSelectedVertices()">
+                            (click)="deleteSelectedArcs()">
                         Удалить отмеченные
                     </button>
                 </div>
