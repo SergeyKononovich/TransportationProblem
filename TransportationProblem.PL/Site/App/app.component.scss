@@ -47,3 +47,8 @@ mdl-layout-drawer {
         border-bottom: 3px solid $active-link-border-color;
     }
 }
+
+.mdl-data-table {
+    width: inherit;
+    height: inherit;
+}

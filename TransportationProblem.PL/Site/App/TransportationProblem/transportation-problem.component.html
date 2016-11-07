@@ -5,25 +5,60 @@
         <div class="condition-area">
             <div class="vertex-area-container" mdl-shadow="4">
                 <mdl-layout-title class="vertex-area-title">Участники</mdl-layout-title>
-
                 <div class="vertex-area">
-                    <div class="add-vertex-area">
-                        <mdl-textfield class="input-element" type="text" label="Название" [(ngModel)]="_newVertex.name" floating-label></mdl-textfield>
+                    <div class="add-vertex-area" mdl-shadow="2">
+                        <mdl-textfield class="input-element" type="text" label="Название"
+                            [(ngModel)]="_newVertex.name" 
+                            floating-label></mdl-textfield>
                         <mdl-textfield class="input-element" type="text"
                             label="Мощность"
                             pattern="-?[0-9]*(\.[0-9]+)?"
-                            error-msg="Input is not a number!"
+                            error-msg="Должно быть число!"
                             [(ngModel)]="_newVertex.power"
-                            floating-label>
-                        </mdl-textfield>
+                            floating-label></mdl-textfield>
                         <mdl-switch class="input-element" [(ngModel)]="_newVertex.priority">Есть приоритет</mdl-switch>
-                        <button class="add-vertex-button" (click)="addNewVertex()" mdl-button mdl-button-type="mini-fab" mdl-ripple>
-                            <mdl-icon>add</mdl-icon>
+                        <button class="add-vertex-button" (click)="addNewVertex()" mdl-button mdl-button-type="raised">
+                            Добавить
                         </button>
                     </div>
-                    <mdl-table mdl-shadow="2" [table-model]="verticesTableModel"></mdl-table>
+                    <mdl-table-selectable class="vertices-table" mdl-shadow="2" 
+                                          [table-model]="_verticesTableModel" 
+                                          (table-model-selectionChanged)="verticesTableSelectionChanged($event)"></mdl-table-selectable>
+                    <button class="delete-selected-button" mdl-button mdl-button-type="raised" mdl-colored="primary" 
+                            *ngIf="_isVerticesDeleteButtonVisible"
+                            (click)="deleteSelectedVertices()">
+                        Удалить отмеченные
+                    </button>
                 </div>
+            </div>
 
+            <div class="arc-area-container" mdl-shadow="4">
+                <mdl-layout-title class="arc-area-title">Участники</mdl-layout-title>
+                <div class="arc-area">
+                    <div class="add-arc-area" mdl-shadow="2">
+                        <mdl-textfield class="input-element" type="text" label="Название"
+                                       [(ngModel)]="_newArc.name"
+                                       floating-label></mdl-textfield>
+                        <mdl-textfield class="input-element" type="text"
+                                       label="Мощность"
+                                       pattern="-?[0-9]*(\.[0-9]+)?"
+                                       error-msg="Должно быть число!"
+                                       [(ngModel)]="_newArc.power"
+                                       floating-label></mdl-textfield>
+                        <mdl-switch class="input-element" [(ngModel)]="_newArc.priority">Есть приоритет</mdl-switch>
+                        <button class="add-arc-button" (click)="addNewArc()" mdl-button mdl-button-type="raised">
+                            Добавить
+                        </button>
+                    </div>
+                    <mdl-table-selectable class="arcs-table" mdl-shadow="2"
+                                          [table-model]="_arcsTableModel"
+                                          (table-model-selectionChanged)="arcsTableSelectionChanged($event)"></mdl-table-selectable>
+                    <button class="delete-selected-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
+                            *ngIf="_isArcsDeleteButtonVisible"
+                            (click)="deleteSelectedVertices()">
+                        Удалить отмеченные
+                    </button>
+                </div>
             </div>
         </div>
 

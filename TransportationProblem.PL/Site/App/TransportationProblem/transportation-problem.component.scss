@@ -11,15 +11,16 @@
         flex-direction: column;
         justify-content: flex-start;
         align-items: stretch;
-        background-color: #ADEAEA;
-        width: 100%;
+        width: inherit;
         min-height: 400px;
         padding: 20px;
+        background-color: $condition-area-primary-color;
         .condition-area-title {
             margin-bottom: 10px;
-            color: #5F9F9F;
+            color: $condition-area-title-text-color;
         }
         .condition-area {
+            max-height: 550px;
             display: flex;
             flex-direction: row;
             justify-content: flex-start;
@@ -29,37 +30,53 @@
                 flex-direction: column;
                 justify-content: flex-start;
                 align-items: stretch;
-                background-color: #ADEAEA;
                 min-height: 400px;
                 padding: 10px;
+                margin-bottom: 10px;
+                background-color: $condition-area-accent-color;
                 .vertex-area-title {
                     font-size: medium;
                     margin-bottom: 8px;
-                    color: #5F9F9F;
+                    color: $condition-area-title-text-color;
                 } 
                 .vertex-area {
                     display: flex;
                     flex-direction: column;
                     justify-content: flex-start;
                     align-items: flex-start;
-                    .add-vertex-area {        
+                    .add-vertex-area {
+                        min-height: 130px;   
+                        width: 430px;    
                         display: flex;
+                        flex-wrap: wrap;
                         flex-direction: row;
                         justify-content: flex-start;
                         align-items: center;
+                        background-color: $condition-area-primary-color; 
                         .input-element {
-                            width: 200px;
-                            margin: 4px;
-                            color: #5F9F9F;
-                        }
-                        .mdl-checkbox.is-checked {
-                            .mdl-checkbox__tick-outline {
-                                background: $active-link-border-color;
-                            }
+                            width: 190px;
+                            margin: 10px;
+                            color: $condition-area-title-text-color;
                         }
                         .add-vertex-button {
-                            background: $active-link-border-color;
+                            margin-bottom: 5px;
+                            margin-left: 100px;
+                            background: $action-button-color;
+                            color: $condition-area-title-text-color;
                         }
+                    }
+                    .vertices-table {
+                        max-height: 250px;
+                        width: 100%;
+                        height: 100%;
+                        margin-top: 10px;
+                        overflow-y: scroll;
+                        background-color: $action-button-color;
+                    }
+                    .delete-selected-button {
+                        margin-top: 5px;
+                        background: $action-button-color;
+                        color: $condition-area-title-text-color;
                     }
                 }
             }
