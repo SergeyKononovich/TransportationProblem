@@ -1,6 +1,7 @@
 ﻿import { IEquatable }       from './iEquatable';
 import { IUniqueSet }       from './iUniqueSet';
 
+
 export class UniqueSet<T extends IEquatable<T>> implements IUniqueSet<T>{
     private container: T[] = new Array<T>();
 

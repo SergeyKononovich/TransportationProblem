@@ -65,12 +65,47 @@
             </div>
 
             <div class="graph-area-container" mdl-shadow="4">
-                <mdl-layout-title class="graph-area-title">Граф поставок</mdl-layout-title>
+                <mdl-layout-title class="graph-area-title">Граф связей</mdl-layout-title>
                 <div class="graph-area">
-                    <div class="graph-canvas" id="graphCanvas" #graphCanvas></div>
+                    <div class="graph-labels">
+                        <div class="graph-label"><div class="provider-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - поставщики</mdl-layout-title></div>
+                        <div class="graph-label"><div class="consumers-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - потребители</mdl-layout-title></div>
+                        <div class="graph-label"><div class="rate-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - ставки</mdl-layout-title></div>
+                    </div>
+                    <div class="graph-canvas" id="conditionGraphCanvas" #conditionGraphCanvas></div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="calc-area-container">
+        <button class="calc-answer-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
+                (click)="calcAnswer()">
+            Расчитать оптимальные поставки
+        </button>
+    </div>
+
+    <div class="answer-area-container">
+        <mdl-layout-title class="answer-area-title">Результат</mdl-layout-title>
+
+        <div class="answer-area">
+            <div class="arc-area-container" mdl-shadow="4">
+                <mdl-layout-title class="arc-area-title">Поставки</mdl-layout-title>
+                <div class="arc-area">
+                    <mdl-table-selectable class="arcs-table" mdl-shadow="2"
+                                            [table-model]="_answerTableModel"
+                                            (table-model-selectionChanged)="answerTableSelectionChanged($event)"></mdl-table-selectable>
+                </div>
+            </div>
+
+            <div class="graph-area-container" mdl-shadow="4">
+                <mdl-layout-title class="graph-area-title">Граф поставок</mdl-layout-title>
+                <div class="graph-area">
+                    <div class="graph-canvas" id="answerGraphCanvas" #answerGraphCanvas></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <dialog-outlet></dialog-outlet>
 </div>

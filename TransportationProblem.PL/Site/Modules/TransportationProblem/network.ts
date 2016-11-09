@@ -6,33 +6,27 @@ import { Vertex }           from './vertex';
 export class Network {
     private static MAX_VALUE: number = 1e+20;
 
-    private vertexes: UniqueSet<Vertex>;
-    private arcs: UniqueSet<Arc>;
-    private adjency: number[][];
+    private _vertexes = new UniqueSet<Vertex>();
+    private _arcs = new UniqueSet<Arc>();
+    private _adjency: number[][];
 
-    constructor() {
-        this.vertexes = new UniqueSet<Vertex>();
-        this.arcs = new UniqueSet<Arc>();
-    }
 
     addVertex(vertex: Vertex): void {
-        try { this.vertexes.add(vertex); }
-        catch (Error) { alert(Error.message); }
+        this._vertexes.add(vertex);
     }
     addArc(arc: Arc): void {
-        try { this.arcs.add(arc); }
-        catch (Error) { alert(Error.message); }
+        this._arcs.add(arc);
     }
     optimize(): void {
         try {
             if (!this.isConnectivity())
-                throw new Error("Network isn't connectivily");
+                throw "Network isn't connectivily";
 
             let getIntroduced = function (network: Network) {
                 let maxDevitation = Number.MAX_VALUE;
                 let needed: Arc = null;
 
-                for (let arc of network.arcs.where(x => !x.basic).items()) {
+                for (let arc of network._arcs.where(x => !x.basic).items()) {
                     let currentDevitation = arc.delta;
 
                     if (currentDevitation < maxDevitation) {
@@ -45,7 +39,7 @@ export class Network {
             let dump = this.balance();
 
             if (!dump) {
-                this.vertexes.where(x => x.priority).forEach(x => {
+                this._vertexes.where(x => x.priority).forEach(x => {
                     if (x.power > 0)
                         this.getArc(x, dump).rate = Network.MAX_VALUE;
                     else
@@ -68,20 +62,20 @@ export class Network {
 
             this.clearJunk(zero, dump);
         }
-        catch (Error) { alert(Error.message); }
+        catch (Error) { throw "Оптимизация завершилась неудачно!"; }
     }
     forbitTransportation(arc: Arc) {
-        if (!arc || !this.arcs.contains(arc))
+        if (!arc || !this._arcs.contains(arc))
             return;
 
         arc.rate = Network.MAX_VALUE;
     }
     setTransportation(arc: Arc, value: number) {
-        if (!arc || !this.arcs.contains(arc))
+        if (!arc || !this._arcs.contains(arc))
             return;
 
         if (value > arc.source.power)
-            throw new Error("Flow rate can't be higher for source's power");
+            throw "Flow rate can't be higher for source's power";
 
         arc.source.power -= value;
         arc.slink.power += value;
@@ -89,25 +83,28 @@ export class Network {
         arc.flow = value;
         arc.rate = Network.MAX_VALUE;
     }
+    getArcs(): Arc[] {
+        return this._arcs.items();
+    }
 
     /*Clear functions*/
     private reset(): void {
-        this.vertexes.forEach(x => x.potential = Number.NEGATIVE_INFINITY);
-        this.arcs.forEach(x => x.inCycle = false);
-        this.arcs.forEach(x => x.straight = undefined);
+        this._vertexes.forEach(x => x.potential = Number.NEGATIVE_INFINITY);
+        this._arcs.forEach(x => x.inCycle = false);
+        this._arcs.forEach(x => x.straight = undefined);
     }
     private clearJunk(zero: Vertex, addition: Vertex) {
         if (zero) {
-            let zeroJunk = this.arcs.where(x => x.slink.equals(zero) || x.source.equals(zero));
-            this.arcs.removeAll(zeroJunk);
+            let zeroJunk = this._arcs.where(x => x.slink.equals(zero) || x.source.equals(zero));
+            this._arcs.removeAll(zeroJunk);
 
-            this.vertexes.remove(zero);
+            this._vertexes.remove(zero);
         }
         if (addition) {
-            let additionJunk = this.arcs.where(x => x.slink.equals(addition) || x.source.equals(addition));
-            this.arcs.removeAll(additionJunk);
+            let additionJunk = this._arcs.where(x => x.slink.equals(addition) || x.source.equals(addition));
+            this._arcs.removeAll(additionJunk);
 
-            this.vertexes.remove(addition);
+            this._vertexes.remove(addition);
         }
     }
     /*End clear functions*/
@@ -116,35 +113,34 @@ export class Network {
     private balance(): Vertex {
         let totalPower = 0;
 
-        this.vertexes.forEach(x => totalPower += x.power);
+        this._vertexes.forEach(x => totalPower += x.power);
 
         if (totalPower !== 0) {
             let addition = new Vertex("addition", -totalPower);
 
             let arc: Arc = null;
-            if (-totalPower >= 0) {
-                for (let vertex of this.vertexes.items()) {
+            if (-totalPower >= 0)
+                for (let vertex of this._vertexes.items()) {
                     arc = new Arc(addition, vertex, Network.MAX_VALUE);
-                    this.arcs.add(arc);
+                    this._arcs.add(arc);
                 }
-            }
-            else {
-                for (let vertex of this.vertexes.items()) {
+            else
+                for (let vertex of this._vertexes.items()) {
                     arc = new Arc(vertex, addition, Network.MAX_VALUE);
-                    this.arcs.add(arc);
+                    this._arcs.add(arc);
                 }
-            }
 
-            this.vertexes.add(addition);
+            this._vertexes.add(addition);
             return addition;
         }
+
         return null;
     }
     private addImaginaryVertex(): Vertex {
         let zero = new Vertex("Zero", 0);
 
         let arc: Arc = null;
-        for (let vertex of this.vertexes.items()) {
+        for (let vertex of this._vertexes.items()) {
 
             if (vertex.power >= 0)
                 arc = new Arc(vertex, zero, Network.MAX_VALUE);
@@ -154,9 +150,11 @@ export class Network {
             arc.flow = Math.abs(vertex.power);
             arc.basic = true;
 
-            this.arcs.add(arc);
+            this._arcs.add(arc);
         }
-        this.vertexes.add(zero);
+
+        this._vertexes.add(zero);
+
         return zero;
     }
     /*end basic plan's steps*/
@@ -169,7 +167,7 @@ export class Network {
             var slinks = network.getSlinkRelated(vertex).intersect(network.getBasicVertexes());
             var sources = network.getSourceRelated(vertex).intersect(network.getBasicVertexes());
 
-            for (let slink of slinks.items()) {
+            for (let slink of slinks.items())
                 if (!isFinite(slink.potential)) {
                     let arc = network.getArc(vertex, slink);
                     if (arc.basic) {
@@ -177,9 +175,7 @@ export class Network {
                         resolve(network, slink);
                     }
                 }
-            }
-            for (let source of sources.items()) {
-
+            for (let source of sources.items())
                 if (!isFinite(source.potential)) {
                     let arc = network.getArc(source, vertex);
 
@@ -188,7 +184,6 @@ export class Network {
                         resolve(network, source);
                     }
                 }
-            }
         }
         resolve(this, basics.elementAt(0));
     }
@@ -196,7 +191,7 @@ export class Network {
         let setCycle = function (network: Network, introduced: Arc, last: Vertex, target: Vertex) {
             introduced.inCycle = true;
 
-            let sibling = network.arcs.where(x => x.basic
+            let sibling = network._arcs.where(x => x.basic
                 && (x.source.equals(last) || x.slink.equals(last))
                 && !x.equals(introduced));
 
@@ -226,7 +221,7 @@ export class Network {
         introduced.basic = true;
 
         let cycle = new Array<Arc>(introduced);
-        let cycleArcs = this.arcs.where(x => x.inCycle && !x.equals(introduced));
+        let cycleArcs = this._arcs.where(x => x.inCycle && !x.equals(introduced));
 
         let head = introduced.slink;
 
@@ -249,10 +244,10 @@ export class Network {
 
             cycleArcs.remove(sibling);
         }
-        let min = this.arcs.where(x => !x.straight && x.inCycle).min(x => x.flow);
+        let min = this._arcs.where(x => !x.straight && x.inCycle).min(x => x.flow);
         min.basic = false;
 
-        for (let arc of this.arcs.where(x => x.inCycle).items()) {
+        for (let arc of this._arcs.where(x => x.inCycle).items()) {
             if (arc.straight)
                 arc.flow += min.flow;
             else
@@ -261,14 +256,13 @@ export class Network {
     }
     private isConnectivity(): boolean {
         var adjency = this.getAdjency();
-        var used = Array<boolean>(this.vertexes.size());
+        var used = Array<boolean>(this._vertexes.size());
 
         let dfs = function (v: number, adjency: number[][], used: boolean[]): void {
             used[v] = true;
-            for (let i = 0; i < adjency[v].length; i++) {
+            for (let i = 0; i < adjency[v].length; i++)
                 if (!used[i])
                     dfs(i, adjency, used);
-            }
         }
         dfs(0, adjency, used);
 
@@ -278,22 +272,23 @@ export class Network {
 
     /*addition functions*/
     private getAdjency(): number[][] {
-        if (!this.adjency) {
-            let size = this.vertexes.size();
+        if (!this._adjency) {
+            let size = this._vertexes.size();
             let matrix: Array<number>[] = [];
 
             for (let i = 0; i < size; i++) {
                 matrix[i] = new Array<number>(size);
-                let related = this.getRelated(this.vertexes.elementAt(i));
+                let related = this.getRelated(this._vertexes.elementAt(i));
 
                 for (let j = 0; j < related.length; j++) {
-                    let index = this.vertexes.indexOf(related[j]);
+                    let index = this._vertexes.indexOf(related[j]);
                     matrix[i][index] = 1;
                 }
             }
-            this.adjency = matrix;
+            this._adjency = matrix;
         }
-        return this.adjency;
+
+        return this._adjency;
     }
 
     private getRelated(vertex: Vertex): Vertex[] {
@@ -306,28 +301,27 @@ export class Network {
     }
     private getSourceRelated(vertex: Vertex): IUniqueSet<Vertex> {
         let array = new UniqueSet<Vertex>();
-        for (let arc of this.arcs.items()) {
+        for (let arc of this._arcs.items())
             if (arc.slink.equals(vertex))
                 array.add(arc.source);
-        }
+
         return array;
     }
     private getSlinkRelated(vertex: Vertex): IUniqueSet<Vertex> {
         let array = new UniqueSet<Vertex>();
 
-        for (let arc of this.arcs.items()) {
+        for (let arc of this._arcs.items())
             if (arc.source.equals(vertex))
                 array.add(arc.slink);
-        }
+
         return array;
     }
     private getArc(source: Vertex, slink: Vertex): Arc {
-        return this.arcs.where(x => x.slink.equals(slink) &&
-            x.source.equals(source)).elementAt(0);
+        return this._arcs.where(x => x.slink.equals(slink) && x.source.equals(source)).elementAt(0);
     }
 
     private getBasicFlow(): IUniqueSet<Arc> {
-        return this.arcs.where(x => x.basic);
+        return this._arcs.where(x => x.basic);
     }
     private getBasicVertexes(): IUniqueSet<Vertex> {
         let vertexes = new UniqueSet<Vertex>();
@@ -338,6 +332,7 @@ export class Network {
             if (!vertexes.contains(arc.slink))
                 vertexes.add(arc.slink);
         }
+
         return vertexes;
     }
     /*End addition functions*/

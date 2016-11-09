@@ -53,6 +53,7 @@ class TableArc implements IMdlTableModelItem {
     styleUrls: ['./transportation-problem.component.scss']
 })
 export class TransportationProblem {
+    //// Condition area
     // Vertecies area
     private _newVertex = new TableVertex();
     private _verticesTableModel = new MdlDefaultTableModel([
@@ -72,9 +73,25 @@ export class TransportationProblem {
     private _isArcsDeleteButtonVisible: boolean = false;
 
     // Graph area
-    @ViewChild('graphCanvas')
-    private _graphCanvas: ElementRef; 
-    private _graph: any;
+    @ViewChild('conditionGraphCanvas')
+    private _conditionGraphCanvas: ElementRef; 
+    private _conditionGraph: any;
+    //// Condition area end
+
+
+    //// Answer area
+    private _network: Network;
+    // Arcs area
+    private _answerTableModel = new MdlDefaultTableModel([
+        { key: 'source', name: 'Отправитель', sortable: true },
+        { key: 'slink', name: 'Получатель', sortable: true },
+        { key: 'flow', name: 'Поставка', sortable: true, numeric: true }
+    ]);
+    // Graph area
+    @ViewChild('answerGraphCanvas')
+    private _answerGraphCanvas: ElementRef;
+    private _answerGraph: any;
+    //// Answer area end
 
 
     constructor(private _dialogService: MdlDialogService) {
@@ -82,11 +99,56 @@ export class TransportationProblem {
 
 
     ngAfterViewInit(): void {
-        this._graph = Cytoscape({
+        this._conditionGraph = Cytoscape({
 
-            container: this._graphCanvas.nativeElement, // container to render in
+            container: this._conditionGraphCanvas.nativeElement,
 
             style: [ // the stylesheet for the graph
+                {
+                    selector: 'node',
+                    style: {
+                        'background-color': '#C6FF00',
+                        'label': 'data(id)',
+                        'text-rotation': 'autorotate'
+                    }
+                },
+
+                {
+                    selector: 'edge',
+                    style: {
+                        'width': 3,
+                        'label': 'data(rate)',
+                        'text-margin-y': -10,
+                        'color': '#83460b',
+                        'text-rotation': 'autorotate',
+                        'curve-style': 'bezier',
+                        'line-color': '#536d6d',
+                        'target-arrow-color': '#536d6d',
+                        'target-arrow-shape': 'triangle'
+                    }
+                },
+
+                {
+                    selector: '.provider',
+                    style: {
+                        'background-color': '#E53935',
+                    }
+                },
+
+                {
+                    selector: '.consumers',
+                    style: {
+                        'background-color': '#689F38',
+                    }
+                }
+            ]
+        });
+
+        this._answerGraph = Cytoscape({
+
+            container: this._answerGraphCanvas.nativeElement,
+
+            style: [
                 {
                     selector: 'node',
                     style: {
@@ -116,6 +178,7 @@ export class TransportationProblem {
     }
 
 
+    //// Condition area
     // Vertecies area
     private emptyNewVertex(): void {
         this._newVertex.name = '';
@@ -182,6 +245,8 @@ export class TransportationProblem {
 
         // Empty newArc
         this.emptyNewArc();
+
+        this.renderConditionGraph();
     }
 
     private verticesTableSelectionChanged(event: any): void {
@@ -209,7 +274,7 @@ export class TransportationProblem {
 
         this.emptyNewArc();
 
-        this.renderGraph();
+        this.renderConditionGraph();
     }
 
     private validateNewArc(): boolean {
@@ -224,7 +289,7 @@ export class TransportationProblem {
             return false;
         }
 
-        if (this._newArc.rate.trim() === '') {
+        if (typeof (this._newArc.rate) === 'undefined' || this._newArc.rate.trim() === '') {
             this._dialogService.alert("Не задано поле 'ставка'!", "Да понял я, понял!", "Ошибка");
             return false;
         }
@@ -245,6 +310,8 @@ export class TransportationProblem {
         }
 
         this.recalcVisibilityOfArcsDeleteButton();
+
+        this.renderConditionGraph();
     }
 
     private arcsTableSelectionChanged(event: any): void {
@@ -264,27 +331,103 @@ export class TransportationProblem {
 
 
     // Graph area
-    private renderGraph(): void {
+    private renderConditionGraph(): void {
         
-        this._graph.remove(this._graph.elements("*"));
+        this._conditionGraph.remove(this._conditionGraph.elements("*"));
 
         for (let el of this._verticesTableModel.data) {
             let vert = el as TableVertex;
-            this._graph.add([
-                { group: "nodes", data: { id: vert.name } }
-            ]);
+            if (+vert.power < 0)
+                this._conditionGraph.add([{ group: "nodes", data: { id: vert.name }, classes: 'provider' }]);
+            else
+                this._conditionGraph.add([{ group: "nodes", data: { id: vert.name }, classes: 'consumers' }]);
         }
 
         for (let el of this._arcsTableModel.data) {
             let arc = el as TableArc;
-            this._graph.add([
+            this._conditionGraph.add([
                 { group: "edges", data: { id: arc.source + arc.slink, source: arc.source, target: arc.slink, rate: arc.rate } }
             ]);
         }
 
-        this._graph.layout({
+        this._conditionGraph.layout({
             name: 'cose-bilkent',
             padding: 60
         });
     }
+    //// Condition area end
+
+
+    //// Calc area
+    private calcAnswer(): void {
+        let newNetwork = new Network();
+
+        let vertices = new Dictionary<string, Vertex>();
+        for (let el of this._verticesTableModel.data) {
+            let vert = el as TableVertex;
+            vertices.setValue(vert.name, new Vertex(vert.name, +vert.power, vert.priority));
+            newNetwork.addVertex(new Vertex(vert.name, +vert.power, vert.priority));
+        }
+
+        for (let el of this._arcsTableModel.data) {
+            let arc = el as TableArc;
+            newNetwork.addArc(new Arc(vertices.getValue(arc.source), vertices.getValue(arc.slink), +arc.rate));
+        }
+
+        try {
+            newNetwork.optimize();
+            this._network = newNetwork;
+            this.initAnswerTable();
+            this.renderAnswerGraph();
+            this._dialogService.alert("Оптимальный план перевозок построен!", "Круто!", "Успех");
+        }
+        catch (error) {
+            this._dialogService.alert(error, "Да понял я, понял!", "Ошибка");
+        }
+    }
+    //// Calc area end
+
+
+    //// Answer area
+    // Vertecies area
+    private initAnswerTable(): any {
+
+        this._answerTableModel.data = [];
+        let els = this._network.getArcs().map((arc: Arc) => {
+            return { source: arc.source.name, slink: arc.slink.name, flow: arc.flow, selected: true } as IMdlTableModelItem
+        })
+
+        this._answerTableModel.data.push(...els);
+    }
+
+    private answerTableSelectionChanged(event: any): void {
+        this.renderAnswerGraph();
+    }
+
+    // Graph area
+
+    private renderAnswerGraph(): void {
+
+        this._answerGraph.remove(this._conditionGraph.elements("*"));
+
+        //for (let el of this._verticesTableModel.data) {
+        //    let vert = el as TableVertex;
+        //    this._conditionGraph.add([
+        //        { group: "nodes", data: { id: vert.name } }
+        //    ]);
+        //}
+
+        for (let el of this._answerTableModel.data.filter(el => el.selected)) {
+            let arc = el as TableArc;
+            this._answerGraph.add([
+                { group: "edges", data: { id: arc.source + arc.slink, source: arc.source, target: arc.slink, rate: arc.rate } }
+            ]);
+        }
+
+        this._answerGraph.layout({
+            name: 'cose-bilkent',
+            padding: 60
+        });
+    }
+    //// Answer area end
 }

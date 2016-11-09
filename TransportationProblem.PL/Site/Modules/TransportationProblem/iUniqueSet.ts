@@ -1,4 +1,5 @@
-﻿import { IEquatable }       from './iEquatable';
+﻿import { IEquatable }   from './iEquatable';
+
 
 export interface IUniqueSet<T extends IEquatable<T>> {
     contains(arg: T): boolean;
@@ -18,5 +19,4 @@ export interface IUniqueSet<T extends IEquatable<T>> {
     remove(element: T): void;
     removeAll(set: IUniqueSet<T>): void;
     min(lamda: (T: T) => number): T;
-
 }
