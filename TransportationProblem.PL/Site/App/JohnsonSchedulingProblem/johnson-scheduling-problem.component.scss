@@ -1,0 +1,318 @@
+﻿@import '../../Content/Styles/_variables.scss';
+@import '../../Content/Styles/_mixins.scss';
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    .condition-area-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        width: inherit;
+        min-height: 400px;
+        padding: 20px;
+        background-color: $condition-area-primary-color;
+        .condition-area-title {
+            margin-bottom: 10px;
+            color: $condition-area-title-text-color;
+        }
+
+        .condition-area {
+            max-height: 550px;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: stretch;
+            .vertex-area-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: stretch;
+                min-height: 400px;
+                padding: 10px;
+                margin-bottom: 10px;
+                margin-right: 20px;
+                background-color: $condition-area-accent-color;
+                .vertex-area-title {
+                    font-size: medium;
+                    margin-bottom: 8px;
+                    color: $condition-area-title-text-color;
+                } 
+                .vertex-area {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                    .add-vertex-area {
+                        min-height: 130px;
+                        height: 130px;
+                        width: 430px;    
+                        display: flex;
+                        flex-wrap: wrap;
+                        flex-direction: row;
+                        justify-content: flex-start;
+                        align-items: center;
+                        background-color: $condition-area-primary-color; 
+                        .input-element {
+                            width: 190px;
+                            margin: 10px;
+                            color: $condition-area-title-text-color;
+                        }
+                        .add-vertex-button {
+                            margin-bottom: 5px;
+                            margin-left: 100px;
+                            background: $condition-action-button-color;
+                            color: $condition-area-title-text-color;
+                        }
+                    }
+                    .vertices-table {
+                        max-height: 250px;
+                        width: 100%;
+                        height: 100%;
+                        margin-top: 10px;
+                        overflow-y: scroll;
+                    }
+                    .delete-selected-button {
+                        margin-top: 5px;
+                        background: $condition-action-button-color;
+                        color: $condition-area-title-text-color;
+                    }
+                }
+            }
+
+            .arc-area-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: stretch;
+                min-height: 400px;
+                padding: 10px;
+                margin-bottom: 10px;
+                margin-right: 20px;
+                background-color: $condition-area-accent-color;
+                .arc-area-title {
+                    font-size: medium;
+                    margin-bottom: 8px;
+                    color: $condition-area-title-text-color;
+                } 
+                .arc-area {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                    .add-arc-area {
+                        min-height: 130px;  
+                        height: 130px;   
+                        width: 430px;    
+                        display: flex;
+                        flex-wrap: wrap;
+                        flex-direction: row;
+                        justify-content: flex-start;
+                        align-items: center;
+                        background-color: $condition-area-primary-color; 
+                        .input-selector {
+                            width: 190px;
+                            height: 30px;
+                            margin: 5px 10px 30px 10px;
+                            color: $condition-area-title-text-color;
+                        }
+                        .input-element {
+                            width: 190px;
+                            margin: 10px;
+                            color: $condition-area-title-text-color;
+                        }
+                        .add-arc-button {
+                            margin-bottom: 4px;
+                            margin-left: 100px;
+                            background: $condition-action-button-color;
+                            color: $condition-area-title-text-color;
+                        }
+                    }
+                    .arcs-table {
+                        max-height: 250px;
+                        width: 100%;
+                        height: 100%;
+                        margin-top: 10px;
+                        overflow-y: scroll;
+                    }
+                    .delete-selected-button {
+                        margin-top: 5px;
+                        background: $condition-action-button-color;
+                        color: $condition-area-title-text-color;
+                    }
+                }
+            }
+
+            
+            .graph-area-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: stretch;
+                min-height: 400px;
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 10px;
+                background-color: $condition-area-accent-color;
+                .graph-area-title {
+                    font-size: medium;
+                    margin-bottom: 8px;
+                    color: $condition-area-title-text-color;
+                } 
+                .graph-area {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                    .graph-labels {   
+                        width: 100%;
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: center;
+                        align-items: center;
+                        .graph-label {
+                            width: 150px;
+                            height: 20px;   
+                            display: flex;
+                            flex-wrap: wrap;
+                            flex-direction: row;
+                            justify-content: flex-start;
+                            align-items: center;
+                            margin-bottom: 5px;
+                            .provider-color {
+                                width: 15px;
+                                height: 15px;
+                                margin: 3px;
+                                background-color: $condition-provider-color;
+                            }
+                            .consumers-color {
+                                width: 15px;
+                                height: 15px;
+                                margin: 3px;
+                                background-color: $condition-consumers-color;
+                            }
+                            .rate-color {
+                                width: 15px;
+                                height: 15px;
+                                margin: 3px;
+                                background-color: $condition-rate-color;
+                            }
+                            .label-title {
+                                font-size: small;
+                                margin: 2px;
+                                color: $condition-area-title-text-color;
+                            }
+                        }
+                    }
+                    .graph-canvas {
+                        width: 100%;
+                        height: 400px;
+                    }
+                }
+            }
+        }
+    }
+    
+     .calc-area-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        width: inherit;
+        padding: 20px;
+        background-color: $calc-area-primary-color;
+        .calc-answer-button {
+            margin-top: 5px;
+            width: 450px;
+            background: $calc-action-button-color;
+            color: $calc-area-title-text-color;
+        }
+    }
+    
+    .answer-area-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        width: inherit;
+        min-height: 400px;
+        padding: 20px;
+        background-color: $answer-area-primary-color;
+        .answer-area-title {
+            margin-bottom: 10px;
+            color: $answer-area-title-text-color;
+        }
+        .answer-area {
+            max-height: 550px;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: stretch;
+
+            .arc-area-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: stretch;
+                min-height: 400px;
+                padding: 10px;
+                margin-bottom: 10px;
+                margin-right: 20px;
+                background-color: $answer-area-accent-color;
+                .arc-area-title {
+                    font-size: medium;
+                    margin-bottom: 8px;
+                    color: $answer-area-title-text-color;
+                } 
+                .arc-area {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                    .arcs-table {
+                        max-height: 250px;
+                        width: 100%;
+                        height: 100%;
+                        margin-top: 10px;
+                        overflow-y: scroll;
+                    }
+                    .delete-selected-button {
+                        margin-top: 5px;
+                        background: $condition-action-button-color;
+                        color: $answer-area-title-text-color;
+                    }
+                }
+            }
+            
+            .graph-area-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: stretch;
+                min-height: 400px;
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 10px;
+                background-color: $answer-area-accent-color;
+                .graph-area-title {
+                    font-size: medium;
+                    margin-bottom: 8px;
+                    color: $answer-area-title-text-color;
+                } 
+                .graph-area {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                    .graph-canvas {
+                        width: 100%;
+                        height: 400px;
+                    }
+                }
+            }
+        }
+    }
+}

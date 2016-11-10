@@ -29,8 +29,8 @@ export class AppComponent implements OnInit {
                 routerLink: "/TransportationProblem"
             },
             {
-                title: "Чет ещё",
-                routerLink: "/Чет ещё"
+                title: "Задача планирования Джонсона",
+                routerLink: "/JohnsonSchedulingProblem"
             }
         ];
     }

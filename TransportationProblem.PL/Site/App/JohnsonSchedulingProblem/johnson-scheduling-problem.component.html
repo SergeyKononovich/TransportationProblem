@@ -4,18 +4,16 @@
 
         <div class="condition-area">
             <div class="vertex-area-container" mdl-shadow="4">
-                <mdl-layout-title class="vertex-area-title">Участники</mdl-layout-title>
+                <mdl-layout-title class="vertex-area-title">Машины</mdl-layout-title>
                 <div class="vertex-area">
                     <div class="add-vertex-area" mdl-shadow="2">
                         <mdl-textfield class="input-element" type="text" label="Название"
                             [(ngModel)]="_newVertex.name" 
                             floating-label></mdl-textfield>
-                        <mdl-textfield class="input-element" type="text" label="Мощность"
-                            pattern="-?[0-9]*(\.[0-9]+)?"
-                            error-msg="Должно быть число!"
-                            [(ngModel)]="_newVertex.power"
-                            floating-label></mdl-textfield>
-                        <mdl-switch class="input-element" [(ngModel)]="_newVertex.priority">Есть приоритет</mdl-switch>
+                        <mdl-select multiple="true" class="input-selector" [(ngModel)]="_newArc.source" placeholder="Отправитель">
+                            <mdl-option [value]><em>Отмена</em></mdl-option>
+                            <mdl-option *ngFor="let c of _verticesTableModel.data" [value]="c.name">{{c.name}}</mdl-option>
+                        </mdl-select>
                         <button class="add-vertex-button" (click)="addNewVertex()" mdl-button mdl-button-type="raised">
                             Добавить
                         </button>
@@ -63,25 +61,16 @@
                     </button>
                 </div>
             </div>
-
-            <div class="graph-area-container" mdl-shadow="4">
-                <mdl-layout-title class="graph-area-title">Граф связей</mdl-layout-title>
-                <div class="graph-area">
-                    <div class="graph-labels">
-                        <div class="graph-label"><div class="provider-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - поставщики</mdl-layout-title></div>
-                        <div class="graph-label"><div class="consumers-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - потребители</mdl-layout-title></div>
-                        <div class="graph-label"><div class="rate-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - ставки</mdl-layout-title></div>
-                    </div>
-                    <div class="graph-canvas" id="conditionGraphCanvas" #conditionGraphCanvas></div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="calc-area-container">
         <button class="calc-answer-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
                 (click)="calcAnswer()">
-            Расcчитать оптимальные поставки
+            Составить расписание используя эвристический алгоритм
+        </button>
+        <button class="calc-answer-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
+                (click)="calcAnswerHeuristicMethod()">            
+            Составить расписание используя эвристический алгоритм
         </button>
     </div>
 
@@ -89,21 +78,7 @@
         <mdl-layout-title class="answer-area-title">Результат</mdl-layout-title>
 
         <div class="answer-area">
-            <div class="arc-area-container" mdl-shadow="4">
-                <mdl-layout-title class="arc-area-title">Поставки</mdl-layout-title>
-                <div class="arc-area">
-                    <mdl-table-selectable class="arcs-table" mdl-shadow="2"
-                                            [table-model]="_answerTableModel"
-                                            (table-model-selectionChanged)="answerTableSelectionChanged($event)"></mdl-table-selectable>
-                </div>
-            </div>
-
-            <div class="graph-area-container" mdl-shadow="4">
-                <mdl-layout-title class="graph-area-title">Граф поставок</mdl-layout-title>
-                <div class="graph-area">
-                    <div class="graph-canvas" id="answerGraphCanvas" #answerGraphCanvas></div>
-                </div>
-            </div>
+            
         </div>
     </div>
 

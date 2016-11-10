@@ -1,7 +1,8 @@
 ﻿import { ModuleWithProviders }  from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { TransportationProblem } from './TransportationProblem/transportation-problem.component';
+import { TransportationProblem }    from './TransportationProblem/transportation-problem.component';
+import { JohnsonSchedulingProblem } from './JohnsonSchedulingProblem/johnson-scheduling-problem.component';
 
 
 const appRoutes: Routes = [
@@ -13,6 +14,10 @@ const appRoutes: Routes = [
     {
         path: 'TransportationProblem',
         component: TransportationProblem
+    },
+    {
+        path: 'JohnsonSchedulingProblem',
+        component: JohnsonSchedulingProblem
     }
 ];
 

@@ -121,11 +121,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="Site\App\JohnsonSchedulingProblem\johnson-scheduling-problem.component.ts" />
     <TypeScriptCompile Include="Site\App\TransportationProblem\transportation-problem.component.ts" />
     <TypeScriptCompile Include="Site\App\app.component.ts" />
     <TypeScriptCompile Include="Site\App\app.module.ts" />
     <TypeScriptCompile Include="Site\App\app.routing.ts" />
     <TypeScriptCompile Include="Site\main.ts" />
+    <TypeScriptCompile Include="Site\Modules\JohnsonSchedulingProblem\johnsonSchedulingProblem.ts" />
     <TypeScriptCompile Include="Site\Modules\TransportationProblem\uniqueSet.ts" />
     <TypeScriptCompile Include="Site\Modules\TransportationProblem\iUniqueSet.ts" />
     <TypeScriptCompile Include="Site\Modules\TransportationProblem\iEquatable.ts" />
@@ -150,6 +152,7 @@
   <ItemGroup>
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="Site\App\JohnsonSchedulingProblem\johnson-scheduling-problem.component.html" />
     <Content Include="Site\App\TransportationProblem\transportation-problem.component.scss" />
     <None Include="Site\App\app.component.scss" />
     <Content Include="Site\App\TransportationProblem\transportation-problem.component.html" />
@@ -174,6 +177,7 @@
     <Content Include="Site\Content\Fonts\material-icons.woff2" />
     <Content Include="Site\Content\Styles\_mixins.scss" />
     <Content Include="Site\Content\Styles\_styles.scss" />
+    <Content Include="Site\App\JohnsonSchedulingProblem\johnson-scheduling-problem.component.scss" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
