@@ -78,7 +78,7 @@ class MacnhineItem {
     public EndTime: number = -1;
     public ArrivalTime: number = -1;
 }
-class Machine {
+export class Machine {
     q: Collections.Queue<MacnhineItem>;
     public DowntimeList: TimeInterval[];
 
@@ -122,7 +122,7 @@ class Machine {
 
     }
 }
-class Task {
+export class Task {
     private static _id: number = 1;
     public get ID(): number { return Task._id++; }
 
@@ -134,7 +134,7 @@ class Task {
     public RemoveMachine(machine: Machine): boolean { return this.Times.remove(machine) !== undefined; }
 }
 
-class JohnsonTask {
+export class JohnsonTask {
     public SolveStupid(tasks: Task[], machines: Machine[]): Solution[] {
         let bestResults: Solution[] = [];
         let permutates = Permutations(tasks);

@@ -185,7 +185,6 @@ export class TransportationProblem {
         this._newVertex.power = '';
         this._newVertex.priority = false;
     }
-
     private addNewVertex(): void {
         if (!this.validateNewVertex())
             return;
@@ -194,7 +193,6 @@ export class TransportationProblem {
 
         this.emptyNewVertex();
     }
-
     private validateNewVertex(): boolean {
 
         if (this._newVertex.name.trim() === '') {
@@ -220,7 +218,6 @@ export class TransportationProblem {
 
         return true;
     }
-
     private deleteSelectedVertices(): void {
         // Get all selected vertices
         let selectedVertecies = this._verticesTableModel.data.filter(value => value.selected);
@@ -248,16 +245,13 @@ export class TransportationProblem {
 
         this.renderConditionGraph();
     }
-
     private verticesTableSelectionChanged(event: any): void {
         this.recalcVisibilityOfVerticesDeleteButton();
     }
-
     private recalcVisibilityOfVerticesDeleteButton(): void {
         this._isVerticesDeleteButtonVisible = this._verticesTableModel
             .data.some((value: IMdlTableModelItem) => value.selected);
     }
-
 
     // Arcs area
     private emptyNewArc(): void {
@@ -265,7 +259,6 @@ export class TransportationProblem {
         this._newArc.slink = '';
         this._newArc.rate = '';
     }
-
     private addNewArc(): void {
         if (!this.validateNewArc())
             return;
@@ -276,7 +269,6 @@ export class TransportationProblem {
 
         this.renderConditionGraph();
     }
-
     private validateNewArc(): boolean {
 
         if (this._newArc.source === '') {
@@ -302,7 +294,6 @@ export class TransportationProblem {
 
         return true;
     }
-
     private deleteSelectedArcs(): void {
         let selectedArcs = this._arcsTableModel.data.filter(value => value.selected);
         for (let arc of selectedArcs) {
@@ -313,22 +304,18 @@ export class TransportationProblem {
 
         this.renderConditionGraph();
     }
-
     private arcsTableSelectionChanged(event: any): void {
         this.recalcVisibilityOfArcsDeleteButton();
     }
-
     private recalcVisibilityOfArcsDeleteButton(): void {
         this._isArcsDeleteButtonVisible = this._arcsTableModel
             .data.some((value: IMdlTableModelItem) => value.selected);
     }
-
     private getDataForArcSlinkSelector(): IMdlTableModelItem[] {
         return this._verticesTableModel.data.filter((vert: TableVertex) =>
             vert.name !== this._newArc.source &&
             !this._arcsTableModel.data.some((arc: TableArc) => arc.source === this._newArc.source && arc.slink === vert.name));
     } 
-
 
     // Graph area
     private renderConditionGraph(): void {
@@ -399,7 +386,6 @@ export class TransportationProblem {
 
         this._answerTableModel.data.push(...els);
     }
-
     private answerTableSelectionChanged(event: any): void {
         this.renderAnswerGraph();
     }

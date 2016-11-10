@@ -127,7 +127,7 @@
     <TypeScriptCompile Include="Site\App\app.module.ts" />
     <TypeScriptCompile Include="Site\App\app.routing.ts" />
     <TypeScriptCompile Include="Site\main.ts" />
-    <TypeScriptCompile Include="Site\Modules\JohnsonSchedulingProblem\johnsonSchedulingProblem.ts" />
+    <TypeScriptCompile Include="Site\Modules\johnson-scheduling-problem.ts" />
     <TypeScriptCompile Include="Site\Modules\TransportationProblem\uniqueSet.ts" />
     <TypeScriptCompile Include="Site\Modules\TransportationProblem\iUniqueSet.ts" />
     <TypeScriptCompile Include="Site\Modules\TransportationProblem\iEquatable.ts" />
