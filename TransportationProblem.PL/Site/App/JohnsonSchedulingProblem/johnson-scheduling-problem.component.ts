@@ -19,28 +19,34 @@ class TableMachine implements IMdlTableModelItem {
     }
 }
 
-
-interface IMachineTask {
-    machine: string;
-    time: string;
-}
-
-
 class TableTask implements IMdlTableModelItem {
     public name: string = '';
-    public targets: IMachineTask[] = [];
     public selected: boolean = false;
 
 
     public copy(): TableTask {
         let copy = new TableTask();
         copy.name = this.name;
-        copy.targets = this.targets;
 
         return copy;
     }
 }
 
+class TableMachineTask implements IMdlTableModelItem {
+    public machine: TableMachine;
+    public task: TableTask;
+    public time: string;
+    public selected: boolean = false;
+
+
+    public copy(): TableMachineTask {
+        let copy = new TableMachineTask();
+        copy.machine = this.machine
+        copy.task = this.task;
+
+        return copy;
+    }
+}
 
 @Component({
     selector: 'johnson-scheduling-problem-component',
@@ -62,9 +68,17 @@ export class JohnsonSchedulingProblem {
         { key: 'name', name: 'Название', sortable: true },
     ]);
     private _isTasksDeleteButtonVisible: boolean = false;
+
+    // MachineTask area
+    private _newMachineTask = new TableMachineTask();
+    private _machineTasksTableModel = new MdlDefaultTableModel([
+        { key: 'machine', name: 'Машина', sortable: true },
+        { key: 'task', name: 'Работа', sortable: true }
+    ]);
+    private _isMachineTasksDeleteButtonVisible: boolean = false;
     //// Condition area end
 
-    
+
     //// Answer area
     private _taskSolver = new JohnsonTask();
     //// Answer area end
@@ -96,25 +110,25 @@ export class JohnsonSchedulingProblem {
 
         return true;
     }
-    private deleteSelectedVertices(): void {
+    private deleteSelectedMachines(): void {
         // Get all selected machines
-        let selectedVertecies = this._machinesTableModel.data.filter(value => value.selected);
+        let selectedMachines = this._machinesTableModel.data.filter(value => value.selected);
 
         // Delete selected machines
-        for (let machine of selectedVertecies)
+        for (let machine of selectedMachines)
             Arrays.remove(this._machinesTableModel.data, machine);
 
 
-        this.recalcVisibilityOfVerticesDeleteButton();
+        this.recalcVisibilityOfMachinesDeleteButton();
         this.recalcVisibilityOfTasksDeleteButton();
 
         // Empty newTask
         this.emptyNewTask();
     }
     private machinesTableSelectionChanged(event: any): void {
-        this.recalcVisibilityOfVerticesDeleteButton();
+        this.recalcVisibilityOfMachinesDeleteButton();
     }
-    private recalcVisibilityOfVerticesDeleteButton(): void {
+    private recalcVisibilityOfMachinesDeleteButton(): void {
         this._isMachinesDeleteButtonVisible = this._machinesTableModel
             .data.some((value: IMdlTableModelItem) => value.selected);
     }
@@ -122,7 +136,6 @@ export class JohnsonSchedulingProblem {
     // Tasks area
     private emptyNewTask(): void {
         this._newTask.name = '';
-        this._newTask.targets = [];
     }
     private addNewTask(): void {
         if (!this.validateNewTask())
@@ -156,9 +169,45 @@ export class JohnsonSchedulingProblem {
         this._isTasksDeleteButtonVisible = this._tasksTableModel
             .data.some((value: IMdlTableModelItem) => value.selected);
     }
-    private getDataForTaskSlinkSelector(): IMdlTableModelItem[] {
-        return this._machinesTableModel.data.filter((machine: TableMachine) =>
-            !this._newTask.targets.some((m: IMachineTask) => m.machine === machine.name));
+
+
+    // Vertecies area
+    private emptyNewMachineTask(): void {
+        this._newMachineTask.machine = undefined;
+        this._newMachineTask.task = undefined;
+        this._newMachineTask.time = undefined;
+    }
+    private addNewMachineTask(): void {
+        if (!this.validateNewMachineTask())
+            return;
+
+        this._machineTasksTableModel.data.push(this._newMachineTask.copy());
+
+        this.emptyNewMachineTask();
+    }
+    private validateNewMachineTask(): boolean {
+
+        
+
+        return true;
+    }
+    private deleteSelectedMachineTasks(): void {
+        // Get all selected machines
+        let selectedMachineTasks = this._machineTasksTableModel.data.filter(value => value.selected);
+
+        // Delete selected machines
+        for (let machineTask of selectedMachineTasks)
+            Arrays.remove(this._machineTasksTableModel.data, machineTask);
+
+
+        this.recalcVisibilityOfMachineTasksDeleteButton();
+    }
+    private machineTasksTableSelectionChanged(event: any): void {
+        this.recalcVisibilityOfMachineTasksDeleteButton();
+    }
+    private recalcVisibilityOfMachineTasksDeleteButton(): void {
+        this._isMachineTasksDeleteButtonVisible = this._machineTasksTableModel
+            .data.some((value: IMdlTableModelItem) => value.selected);
     }
     //// Condition area end
 

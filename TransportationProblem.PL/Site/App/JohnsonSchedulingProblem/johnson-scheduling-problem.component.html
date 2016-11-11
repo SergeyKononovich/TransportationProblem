@@ -29,9 +29,9 @@
                 <mdl-layout-title class="task-area-title">Работы</mdl-layout-title>
                 <div class="task-area">
                     <div class="add-task-area" mdl-shadow="2">
-                        <mdl-select class="input-selector" multiple="true" [(ngModel)]="_newTask.targets" placeholder="Отправитель">
-                            <mdl-option *ngFor="let c of _machinesTableModel.data" [value]="c.name">{{c.name}}</mdl-option>
-                        </mdl-select>
+                        <mdl-textfield class="input-element" type="text" label="Название"
+                                       [(ngModel)]="_newTask.name"
+                                       floating-label></mdl-textfield>
                         <button class="add-task-button" (click)="addNewTask()" mdl-button mdl-button-type="raised">
                             Добавить
                         </button>
@@ -42,6 +42,38 @@
                     <button class="delete-selected-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
                             *ngIf="_isTasksDeleteButtonVisible"
                             (click)="deleteSelectedTasks()">
+                        Удалить отмеченные
+                    </button>
+                </div>
+            </div>
+
+            <div class="machine-task-area-container" mdl-shadow="4">
+                <mdl-layout-title class="task-area-title">Работы</mdl-layout-title>
+                <div class="machine-task-area">
+                    <div class="add-machine-task-area" mdl-shadow="2">
+                        <mdl-select class="input-selector" [(ngModel)]="_newMachineTask.machine" placeholder="Машина">
+                            <mdl-option [value]><em>Отмена</em></mdl-option>
+                            <mdl-option *ngFor="let c of _machinesTableModel.data" [value]="c">{{c.name}}</mdl-option>
+                        </mdl-select>
+                        <mdl-select class="input-selector" [(ngModel)]="_newMachineTask.task" placeholder="Работа">
+                            <mdl-option [value]><em>Отмена</em></mdl-option>
+                            <mdl-option *ngFor="let c of _tasksTableModel.data" [value]="c">{{c.name}}</mdl-option>
+                        </mdl-select>
+                        <mdl-textfield class="input-element" type="text" label="Время"
+                                       pattern="-?[0-9]*(\.[0-9]+)?"
+                                       error-msg="Должно быть число!"
+                                       [(ngModel)]="_newMachineTask.power"
+                                       floating-label></mdl-textfield>
+                        <button class="add-machine-task-button" (click)="addNewMachineTask()" mdl-button mdl-button-type="raised">
+                            Добавить
+                        </button>
+                    </div>
+                    <mdl-table-selectable class="machine-task-table" mdl-shadow="2"
+                                          [table-model]="_machineTasksTableModel"
+                                          (table-model-selectionChanged)="machineTasksTableSelectionChanged($event)"></mdl-table-selectable>
+                    <button class="delete-selected-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
+                            *ngIf="_isMachineTasksDeleteButtonVisible"
+                            (click)="deleteSelectedMachineTasks()">
                         Удалить отмеченные
                     </button>
                 </div>
