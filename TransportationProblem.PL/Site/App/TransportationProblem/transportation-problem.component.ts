@@ -46,6 +46,27 @@ class TableArc implements IMdlTableModelItem {
     }
 }
 
+class TableAnswer implements IMdlTableModelItem {
+    public source: string = '';
+    public slink: string = '';
+    public rate: string = '';
+    public flow: number = 0;
+    public price: number = 0;
+    public selected: boolean = false;
+
+
+    public copy(): TableAnswer {
+        let copy = new TableAnswer();
+        copy.source = this.source;
+        copy.slink = this.slink;
+        copy.rate = this.rate;
+        copy.flow = this.flow;
+        copy.selected = this.selected;
+
+        return copy;
+    }
+}
+
 
 @Component({
     selector: 'transportation-problem-component',
@@ -85,8 +106,10 @@ export class TransportationProblem {
     private _answerTableModel = new MdlDefaultTableModel([
         { key: 'source', name: 'Отправитель', sortable: true },
         { key: 'slink', name: 'Получатель', sortable: true },
-        { key: 'flow', name: 'Поставка', sortable: true, numeric: true }
+        { key: 'flow', name: 'Поставка', sortable: true, numeric: true },
+        { key: 'price', name: 'Стоимость', sortable: true, numeric: true }
     ]);
+    private _currentArcsInNetwork: Arc[];
     // Graph area
     @ViewChild('answerGraphCanvas')
     private _answerGraphCanvas: ElementRef;
@@ -152,7 +175,7 @@ export class TransportationProblem {
                 {
                     selector: 'node',
                     style: {
-                        'background-color': '#666',
+                        'background-color': '#C6FF',
                         'label': 'data(id)',
                         'text-rotation': 'autorotate'
                     }
@@ -162,13 +185,28 @@ export class TransportationProblem {
                     selector: 'edge',
                     style: {
                         'width': 3,
-                        'label': 'data(rate)',
+                        'label': 'data(flow)',
+                        'color': '#231e8b',
                         'text-margin-y': -10,
                         'text-rotation': 'autorotate',
                         'curve-style': 'bezier',
                         'line-color': '#536d6d',
                         'target-arrow-color': '#536d6d',
                         'target-arrow-shape': 'triangle'
+                    }
+                },
+
+                {
+                    selector: '.provider',
+                    style: {
+                        'background-color': '#E53935',
+                    }
+                },
+
+                {
+                    selector: '.consumers',
+                    style: {
+                        'background-color': '#689F38',
                     }
                 }
             ]
@@ -324,7 +362,7 @@ export class TransportationProblem {
 
         for (let el of this._verticesTableModel.data) {
             let vert = el as TableVertex;
-            if (+vert.power < 0)
+            if (+vert.power > 0)
                 this._conditionGraph.add([{ group: "nodes", data: { id: vert.name }, classes: 'provider' }]);
             else
                 this._conditionGraph.add([{ group: "nodes", data: { id: vert.name }, classes: 'consumers' }]);
@@ -351,14 +389,18 @@ export class TransportationProblem {
 
         let vertices = new Dictionary<string, Vertex>();
         for (let el of this._verticesTableModel.data) {
-            let vert = el as TableVertex;
-            vertices.setValue(vert.name, new Vertex(vert.name, +vert.power, vert.priority));
-            newNetwork.addVertex(new Vertex(vert.name, +vert.power, vert.priority));
+            let vertTable = el as TableVertex;
+            let vert = new Vertex(vertTable.name, +vertTable.power, vertTable.priority);
+            vertices.setValue(vert.name, vert);
+            newNetwork.addVertex(vert);
         }
 
+        this._currentArcsInNetwork = [];
         for (let el of this._arcsTableModel.data) {
-            let arc = el as TableArc;
-            newNetwork.addArc(new Arc(vertices.getValue(arc.source), vertices.getValue(arc.slink), +arc.rate));
+            let arcTable = el as TableArc;
+            let arc = new Arc(vertices.getValue(arcTable.source), vertices.getValue(arcTable.slink), +arcTable.rate);
+            this._currentArcsInNetwork.push(arc);
+            newNetwork.addArc(arc);
         }
 
         try {
@@ -380,8 +422,16 @@ export class TransportationProblem {
     private initAnswerTable(): any {
 
         this._answerTableModel.data = [];
-        let els = this._network.getArcs().map((arc: Arc) => {
-            return { source: arc.source.name, slink: arc.slink.name, flow: arc.flow, selected: true } as IMdlTableModelItem
+        let els = this._currentArcsInNetwork.map((arc: Arc) => {
+            let answer = new TableAnswer();
+            answer.source = arc.source.name;
+            answer.slink = arc.slink.name;
+            answer.flow = arc.flow;
+            answer.rate = arc.rate.toString();
+            answer.price = answer.flow * arc.rate;
+            answer.selected = true;
+
+            return answer;
         })
 
         this._answerTableModel.data.push(...els);
@@ -394,19 +444,20 @@ export class TransportationProblem {
 
     private renderAnswerGraph(): void {
 
-        this._answerGraph.remove(this._conditionGraph.elements("*"));
+        this._answerGraph.remove(this._answerGraph.elements("*"));
 
-        //for (let el of this._verticesTableModel.data) {
-        //    let vert = el as TableVertex;
-        //    this._conditionGraph.add([
-        //        { group: "nodes", data: { id: vert.name } }
-        //    ]);
-        //}
+        for (let el of this._verticesTableModel.data) {
+            let vert = el as TableVertex;
+            if (+vert.power > 0)
+                this._answerGraph.add([{ group: "nodes", data: { id: vert.name }, classes: 'provider' }]);
+            else
+                this._answerGraph.add([{ group: "nodes", data: { id: vert.name }, classes: 'consumers' }]);
+        }
 
         for (let el of this._answerTableModel.data.filter(el => el.selected)) {
-            let arc = el as TableArc;
+            let arc = el as TableAnswer;
             this._answerGraph.add([
-                { group: "edges", data: { id: arc.source + arc.slink, source: arc.source, target: arc.slink, rate: arc.rate } }
+                { group: "edges", data: { id: arc.source + arc.slink, source: arc.source, target: arc.slink, flow: arc.flow } }
             ]);
         }
 

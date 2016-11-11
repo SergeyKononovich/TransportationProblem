@@ -26,7 +26,7 @@
             flex-direction: row;
             justify-content: flex-start;
             align-items: stretch;
-            .vertex-area-container {
+            .machine-area-container {
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
@@ -36,17 +36,17 @@
                 margin-bottom: 10px;
                 margin-right: 20px;
                 background-color: $condition-area-accent-color;
-                .vertex-area-title {
+                .machine-area-title {
                     font-size: medium;
                     margin-bottom: 8px;
                     color: $condition-area-title-text-color;
                 } 
-                .vertex-area {
+                .machine-area {
                     display: flex;
                     flex-direction: column;
                     justify-content: flex-start;
                     align-items: flex-start;
-                    .add-vertex-area {
+                    .add-machine-area {
                         min-height: 130px;
                         height: 130px;
                         width: 430px;    
@@ -61,14 +61,14 @@
                             margin: 10px;
                             color: $condition-area-title-text-color;
                         }
-                        .add-vertex-button {
+                        .add-machine-button {
                             margin-bottom: 5px;
                             margin-left: 100px;
                             background: $condition-action-button-color;
                             color: $condition-area-title-text-color;
                         }
                     }
-                    .vertices-table {
+                    .machines-table {
                         max-height: 250px;
                         width: 100%;
                         height: 100%;
@@ -83,7 +83,7 @@
                 }
             }
 
-            .arc-area-container {
+            .task-area-container {
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
@@ -93,17 +93,17 @@
                 margin-bottom: 10px;
                 margin-right: 20px;
                 background-color: $condition-area-accent-color;
-                .arc-area-title {
+                .task-area-title {
                     font-size: medium;
                     margin-bottom: 8px;
                     color: $condition-area-title-text-color;
                 } 
-                .arc-area {
+                .task-area {
                     display: flex;
                     flex-direction: column;
                     justify-content: flex-start;
                     align-items: flex-start;
-                    .add-arc-area {
+                    .add-task-area {
                         min-height: 130px;  
                         height: 130px;   
                         width: 430px;    
@@ -124,14 +124,14 @@
                             margin: 10px;
                             color: $condition-area-title-text-color;
                         }
-                        .add-arc-button {
+                        .add-task-button {
                             margin-bottom: 4px;
                             margin-left: 100px;
                             background: $condition-action-button-color;
                             color: $condition-area-title-text-color;
                         }
                     }
-                    .arcs-table {
+                    .tasks-table {
                         max-height: 250px;
                         width: 100%;
                         height: 100%;
@@ -145,78 +145,10 @@
                     }
                 }
             }
-
-            
-            .graph-area-container {
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
-                align-items: stretch;
-                min-height: 400px;
-                width: 100%;
-                padding: 10px;
-                margin-bottom: 10px;
-                background-color: $condition-area-accent-color;
-                .graph-area-title {
-                    font-size: medium;
-                    margin-bottom: 8px;
-                    color: $condition-area-title-text-color;
-                } 
-                .graph-area {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: flex-start;
-                    align-items: flex-start;
-                    .graph-labels {   
-                        width: 100%;
-                        display: flex;
-                        flex-direction: row;
-                        justify-content: center;
-                        align-items: center;
-                        .graph-label {
-                            width: 150px;
-                            height: 20px;   
-                            display: flex;
-                            flex-wrap: wrap;
-                            flex-direction: row;
-                            justify-content: flex-start;
-                            align-items: center;
-                            margin-bottom: 5px;
-                            .provider-color {
-                                width: 15px;
-                                height: 15px;
-                                margin: 3px;
-                                background-color: $condition-provider-color;
-                            }
-                            .consumers-color {
-                                width: 15px;
-                                height: 15px;
-                                margin: 3px;
-                                background-color: $condition-consumers-color;
-                            }
-                            .rate-color {
-                                width: 15px;
-                                height: 15px;
-                                margin: 3px;
-                                background-color: $condition-rate-color;
-                            }
-                            .label-title {
-                                font-size: small;
-                                margin: 2px;
-                                color: $condition-area-title-text-color;
-                            }
-                        }
-                    }
-                    .graph-canvas {
-                        width: 100%;
-                        height: 400px;
-                    }
-                }
-            }
         }
     }
     
-     .calc-area-container {
+    .calc-area-container {
         display: flex;
         flex-direction: column;
         justify-content: flex-start;

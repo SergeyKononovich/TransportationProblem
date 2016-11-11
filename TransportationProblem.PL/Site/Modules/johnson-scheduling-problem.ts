@@ -16,7 +16,7 @@ function Permutations<T>(list: T[]): T[][] {
     if (list.length == 0)
         return [[]];
 
-    var result = [];
+    var result: any[] = [];
 
     for (var i = 0; i < list.length; i++) {
         // Clone list (kind of)

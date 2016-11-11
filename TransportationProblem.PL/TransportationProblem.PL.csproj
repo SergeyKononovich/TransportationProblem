@@ -128,13 +128,6 @@
     <TypeScriptCompile Include="Site\App\app.routing.ts" />
     <TypeScriptCompile Include="Site\main.ts" />
     <TypeScriptCompile Include="Site\Modules\johnson-scheduling-problem.ts" />
-    <TypeScriptCompile Include="Site\Modules\TransportationProblem\uniqueSet.ts" />
-    <TypeScriptCompile Include="Site\Modules\TransportationProblem\iUniqueSet.ts" />
-    <TypeScriptCompile Include="Site\Modules\TransportationProblem\iEquatable.ts" />
-    <TypeScriptCompile Include="Site\Modules\TransportationProblem\guid.ts" />
-    <TypeScriptCompile Include="Site\Modules\TransportationProblem\network.ts" />
-    <TypeScriptCompile Include="Site\Modules\TransportationProblem\arc.ts" />
-    <TypeScriptCompile Include="Site\Modules\TransportationProblem\vertex.ts" />
     <TypeScriptCompile Include="Site\polyfills.ts" />
     <TypeScriptCompile Include="Site\Modules\transportation-problem.ts" />
     <TypeScriptCompile Include="Site\vendor.ts" />

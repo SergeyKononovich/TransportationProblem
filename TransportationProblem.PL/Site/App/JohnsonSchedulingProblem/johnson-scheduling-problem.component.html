@@ -3,84 +3,70 @@
         <mdl-layout-title class="condition-area-title">Условие</mdl-layout-title>
 
         <div class="condition-area">
-            <div class="vertex-area-container" mdl-shadow="4">
-                <mdl-layout-title class="vertex-area-title">Машины</mdl-layout-title>
-                <div class="vertex-area">
-                    <div class="add-vertex-area" mdl-shadow="2">
+            <div class="machine-area-container" mdl-shadow="4">
+                <mdl-layout-title class="machine-area-title">Машины</mdl-layout-title>
+                <div class="machine-area">
+                    <div class="add-machine-area" mdl-shadow="2">
                         <mdl-textfield class="input-element" type="text" label="Название"
-                            [(ngModel)]="_newMachine.name" 
-                            floating-label></mdl-textfield>
-                        <mdl-select multiple="true" class="input-selector" [(ngModel)]="_newArc.source" placeholder="Отправитель">
-                            <mdl-option [value]><em>Отмена</em></mdl-option>
-                            <mdl-option *ngFor="let c of _verticesTableModel.data" [value]="c.name">{{c.name}}</mdl-option>
-                        </mdl-select>
-                        <button class="add-vertex-button" (click)="addNewVertex()" mdl-button mdl-button-type="raised">
-                            Добавить
-                        </button>
-                    </div>
-                    <mdl-table-selectable class="vertices-table" mdl-shadow="2" 
-                                          [table-model]="_verticesTableModel" 
-                                          (table-model-selectionChanged)="verticesTableSelectionChanged($event)"></mdl-table-selectable>
-                    <button class="delete-selected-button" mdl-button mdl-button-type="raised" mdl-colored="primary" 
-                            *ngIf="_isVerticesDeleteButtonVisible"
-                            (click)="deleteSelectedVertices()">
-                        Удалить отмеченные
-                    </button>
-                </div>
-            </div>
-
-            <div class="arc-area-container" mdl-shadow="4">
-                <mdl-layout-title class="arc-area-title">Связи</mdl-layout-title>
-                <div class="arc-area">
-                    <div class="add-arc-area" mdl-shadow="2">
-                        <mdl-select class="input-selector" [(ngModel)]="_newArc.source" placeholder="Отправитель">
-                            <mdl-option [value]><em>Отмена</em></mdl-option>
-                            <mdl-option *ngFor="let c of _verticesTableModel.data" [value]="c.name">{{c.name}}</mdl-option>
-                        </mdl-select>
-                        <mdl-select class="input-selector" [(ngModel)]="_newArc.slink" placeholder="Получатель">
-                            <mdl-option [value]><em>Отмена</em></mdl-option>
-                            <mdl-option *ngFor="let c of getDataForArcSlinkSelector()" 
-                                        [value]="c.name">{{c.name}}</mdl-option>
-                        </mdl-select>
-                        <mdl-textfield class="input-element" type="text" label="Ставка"
-                                       pattern="-?[0-9]*(\.[0-9]+)?"
-                                       error-msg="Должно быть число!"
-                                       [(ngModel)]="_newArc.rate"
+                                       [(ngModel)]="_newMachine.name"
                                        floating-label></mdl-textfield>
-                        <button class="add-arc-button" (click)="addNewArc()" mdl-button mdl-button-type="raised">
+                        <button class="add-machine-button" (click)="addNewMachine()" mdl-button mdl-button-type="raised">
                             Добавить
                         </button>
                     </div>
-                    <mdl-table-selectable class="arcs-table" mdl-shadow="2"
-                                          [table-model]="_arcsTableModel"
-                                          (table-model-selectionChanged)="arcsTableSelectionChanged($event)"></mdl-table-selectable>
+                    <mdl-table-selectable class="machines-table" mdl-shadow="2"
+                                          [table-model]="_machinesTableModel"
+                                          (table-model-selectionChanged)="machinesTableSelectionChanged($event)"></mdl-table-selectable>
                     <button class="delete-selected-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
-                            *ngIf="_isArcsDeleteButtonVisible"
-                            (click)="deleteSelectedArcs()">
+                            *ngIf="_isMachinesDeleteButtonVisible"
+                            (click)="deleteSelectedMachines()">
                         Удалить отмеченные
                     </button>
                 </div>
             </div>
-    </div>
 
-    <div class="calc-area-container">
-        <button class="calc-answer-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
-                (click)="calcAnswer()">
-            Составить расписание используя эвристический алгоритм
-        </button>
-        <button class="calc-answer-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
-                (click)="calcAnswerHeuristicMethod()">            
-            Составить расписание используя эвристический алгоритм
-        </button>
-    </div>
-
-    <div class="answer-area-container">
-        <mdl-layout-title class="answer-area-title">Результат</mdl-layout-title>
-
-        <div class="answer-area">
-            
+            <div class="task-area-container" mdl-shadow="4">
+                <mdl-layout-title class="task-area-title">Работы</mdl-layout-title>
+                <div class="task-area">
+                    <div class="add-task-area" mdl-shadow="2">
+                        <mdl-select class="input-selector" multiple="true" [(ngModel)]="_newTask.targets" placeholder="Отправитель">
+                            <mdl-option *ngFor="let c of _machinesTableModel.data" [value]="c.name">{{c.name}}</mdl-option>
+                        </mdl-select>
+                        <button class="add-task-button" (click)="addNewTask()" mdl-button mdl-button-type="raised">
+                            Добавить
+                        </button>
+                    </div>
+                    <mdl-table-selectable class="task-table" mdl-shadow="2"
+                                          [table-model]="_tasksTableModel"
+                                          (table-model-selectionChanged)="tasksTableSelectionChanged($event)"></mdl-table-selectable>
+                    <button class="delete-selected-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
+                            *ngIf="_isTasksDeleteButtonVisible"
+                            (click)="deleteSelectedTasks()">
+                        Удалить отмеченные
+                    </button>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <dialog-outlet></dialog-outlet>
+        <div class="calc-area-container">
+            <button class="calc-answer-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
+                    (click)="calcAnswerUseStupidMethod()">
+                Составить расписание используя эвристический алгоритм
+            </button>
+            <button class="calc-answer-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
+                    (click)="calcAnswerUseHeuristicMethod()">
+                Составить расписание используя эвристический алгоритм
+            </button>
+        </div>
+
+        <div class="answer-area-container">
+            <mdl-layout-title class="answer-area-title">Результат</mdl-layout-title>
+
+            <div class="answer-area">
+
+            </div>
+        </div>
+
+        <dialog-outlet></dialog-outlet>
+    </div>
 </div>

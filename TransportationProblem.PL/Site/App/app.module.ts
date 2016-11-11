@@ -7,6 +7,7 @@ import { ResponsiveModule }     from 'ng2-responsive';
 
 import { AppComponent }             from './app.component';
 import { TransportationProblem }    from './TransportationProblem/transportation-problem.component';
+import { JohnsonSchedulingProblem } from './JohnsonSchedulingProblem/johnson-scheduling-problem.component';
 import { appRoutingModule }         from './app.routing';
 
 
@@ -21,7 +22,8 @@ import { appRoutingModule }         from './app.routing';
     ],
     declarations: [
         AppComponent,
-        TransportationProblem
+        TransportationProblem,
+        JohnsonSchedulingProblem
     ],
     bootstrap: [AppComponent]
 })
