@@ -142,13 +142,12 @@ export class Arc implements IEquatable<Arc> {
 
 
     equals(arc: Arc): boolean {
-        return (this.slink.equals(arc.slink) && this.source.equals(arc.source)) ||
-            (this.slink.equals(arc.source) && this.source.equals(arc.slink));
+        return (this.slink.equals(arc.slink) && this.source.equals(arc.source));
     }
 }
 
 export class Network {
-    private static MAX_VALUE: number = 1e+20;
+    private static MAX_VALUE: number = 1e+15;
 
     private vertexes: UniqueSet<Vertex>;
     private arcs: UniqueSet<Arc>;
@@ -188,7 +187,7 @@ export class Network {
             }
             let dump = this.balance();
 
-            if (!dump) {
+            if (dump) {
                 this.vertexes.where(x => x.priority).forEach(x => {
                     if (x.power > 0)
                         this.getArc(x, dump).rate = Network.MAX_VALUE;
@@ -238,7 +237,7 @@ export class Network {
     private reset(): void {
         this.vertexes.forEach(x => x.potential = Number.NEGATIVE_INFINITY);
         this.arcs.forEach(x => x.inCycle = false);
-        this.arcs.forEach(x => x.straight = undefined);
+        this.arcs.forEach(x => x.straight = null);
     }
     private clearJunk(zero: Vertex, addition: Vertex) {
         if (zero) {
@@ -393,14 +392,17 @@ export class Network {
 
             cycleArcs.remove(sibling);
         }
-        let min = this.arcs.where(x => !x.straight && x.inCycle).min(x => x.flow);
-        min.basic = false;
+        //TODO
+        let needed = this.arcs.where(x => x.straight != null && !x.equals(introduced) && x.inCycle).min(x => x.flow);
+        var min = needed.flow;
+        //End
+        needed.basic = false;
 
         for (let arc of this.arcs.where(x => x.inCycle).items()) {
             if (arc.straight)
-                arc.flow += min.flow;
+                arc.flow += min;
             else
-                arc.flow -= min.flow;
+                arc.flow -= min;
         }
     }
     private isConnectivity(): boolean {
@@ -424,7 +426,7 @@ export class Network {
     private getAdjency(): number[][] {
         if (!this.adjency) {
             let size = this.vertexes.size();
-            let matrix: number[][] = [];
+            let matrix: any[] = [];
 
             for (let i = 0; i < size; i++) {
                 matrix[i] = new Array<number>(size);
@@ -484,7 +486,6 @@ export class Network {
         }
         return vertexes;
     }
-    /*End addition functions*/
 }
 
 
