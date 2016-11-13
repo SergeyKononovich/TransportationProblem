@@ -94,6 +94,7 @@ export class JohnsonSchedulingProblem {
         this._newMachine.name = '';
     }
     private addNewMachine(): void {
+        let a = new Machine();
         if (!this.validateNewMachine())
             return;
 

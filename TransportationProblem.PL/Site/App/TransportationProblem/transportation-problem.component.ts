@@ -122,6 +122,9 @@ export class TransportationProblem {
 
 
     ngAfterViewInit(): void {
+
+        regCose(Cytoscape);
+
         this._conditionGraph = Cytoscape({
 
             container: this._conditionGraphCanvas.nativeElement,
@@ -211,8 +214,6 @@ export class TransportationProblem {
                 }
             ]
         });
-
-        regCose(Cytoscape);
     }
 
 
