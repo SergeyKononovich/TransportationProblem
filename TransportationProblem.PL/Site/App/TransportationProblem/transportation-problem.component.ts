@@ -234,7 +234,7 @@ export class TransportationProblem {
     }
     private validateNewVertex(): boolean {
 
-        if (this._newVertex.name.trim() === '') {
+        if (typeof (this._newVertex.name) === 'undefined' || this._newVertex.name.trim() === '') {
             this._dialogService.alert("Название участника не может быть пустым!", "Да понял я, понял!", "Ошибка");
             return false;
         }
@@ -310,12 +310,12 @@ export class TransportationProblem {
     }
     private validateNewArc(): boolean {
 
-        if (this._newArc.source === '') {
+        if (typeof (this._newArc.source) === 'undefined' || this._newArc.source === '') {
             this._dialogService.alert("Отправитель не указан!", "Да понял я, понял!", "Ошибка");
             return false;
         }
 
-        if (this._newArc.slink === '') {
+        if (typeof (this._newArc.slink) === 'undefined' || this._newArc.slink === '') {
             this._dialogService.alert("Получатель не указан!", "Да понял я, понял!", "Ошибка");
             return false;
         }
@@ -327,7 +327,7 @@ export class TransportationProblem {
 
         let rate: number = +this._newArc.rate;
         if (isNaN(rate) || rate === 0) {
-            this._dialogService.alert("Поле 'ставка' должно быть числом!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Поле 'ставка' должно быть числом отличным от 0!", "Да понял я, понял!", "Ошибка");
             return false;
         }
 

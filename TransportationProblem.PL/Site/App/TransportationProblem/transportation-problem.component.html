@@ -44,7 +44,7 @@
                             <mdl-option *ngFor="let c of getDataForArcSlinkSelector()" 
                                         [value]="c.name">{{c.name}}</mdl-option>
                         </mdl-select>
-                        <mdl-textfield class="input-element" type="text" label="Ставка"
+                        <mdl-textfield class="input-element" type="text" label="Тариф"
                                        pattern="-?[0-9]*(\.[0-9]+)?"
                                        error-msg="Должно быть число!"
                                        [(ngModel)]="_newArc.rate"
@@ -70,7 +70,7 @@
                     <div class="graph-labels">
                         <div class="graph-label"><div class="provider-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - поставщики</mdl-layout-title></div>
                         <div class="graph-label"><div class="consumers-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - потребители</mdl-layout-title></div>
-                        <div class="graph-label"><div class="rate-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - ставки</mdl-layout-title></div>
+                        <div class="graph-label"><div class="rate-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - тарифы</mdl-layout-title></div>
                     </div>
                     <div class="graph-canvas" id="conditionGraphCanvas" #conditionGraphCanvas></div>
                 </div>

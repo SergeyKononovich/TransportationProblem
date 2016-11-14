@@ -33,9 +33,9 @@ class TableTask implements IMdlTableModelItem {
 }
 
 class TableMachineTask implements IMdlTableModelItem {
-    public machine: TableMachine;
-    public task: TableTask;
-    public time: string;
+    public machine: string = '';
+    public task: string = '';
+    public time: string = '';
     public selected: boolean = false;
 
 
@@ -43,6 +43,7 @@ class TableMachineTask implements IMdlTableModelItem {
         let copy = new TableMachineTask();
         copy.machine = this.machine
         copy.task = this.task;
+        copy.time = this.time;
 
         return copy;
     }
@@ -72,8 +73,9 @@ export class JohnsonSchedulingProblem {
     // MachineTask area
     private _newMachineTask = new TableMachineTask();
     private _machineTasksTableModel = new MdlDefaultTableModel([
-        { key: 'machine', name: 'Машина', sortable: true },
-        { key: 'task', name: 'Работа', sortable: true }
+        { key: 'machine', name: 'Исполнитель', sortable: true },
+        { key: 'task', name: 'Работа', sortable: true },
+        { key: 'time', name: 'Время', sortable: true }
     ]);
     private _isMachineTasksDeleteButtonVisible: boolean = false;
     //// Condition area end
@@ -89,12 +91,11 @@ export class JohnsonSchedulingProblem {
 
 
     //// Condition area
-    // Vertecies area
+    // Machines area
     private emptyNewMachine(): void {
         this._newMachine.name = '';
     }
     private addNewMachine(): void {
-        let a = new Machine();
         if (!this.validateNewMachine())
             return;
 
@@ -103,9 +104,13 @@ export class JohnsonSchedulingProblem {
         this.emptyNewMachine();
     }
     private validateNewMachine(): boolean {
-
         if (this._newMachine.name.trim() === '') {
-            this._dialogService.alert("Название машины не может быть пустым!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Название исполнителя не может быть пустым!", "Да понял я, понял!", "Ошибка");
+            return false;
+        }
+
+        if (this._machinesTableModel.data.some((value: TableMachine) => value.name === this._newMachine.name)) {
+            this._dialogService.alert("Исполнитель с таким названием уже существует!", "Да понял я, понял!", "Ошибка");
             return false;
         }
 
@@ -147,9 +152,13 @@ export class JohnsonSchedulingProblem {
         this.emptyNewTask();
     }
     private validateNewTask(): boolean {
-
         if (this._newTask.name.trim() === '') {
-            this._dialogService.alert("Название задачи не может быть пустым!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Название работы не может быть пустым!", "Да понял я, понял!", "Ошибка");
+            return false;
+        }
+
+        if (this._tasksTableModel.data.some((value: TableTask) => value.name === this._newTask.name)) {
+            this._dialogService.alert("Работа с таким названием уже существует!", "Да понял я, понял!", "Ошибка");
             return false;
         }
 
@@ -172,11 +181,11 @@ export class JohnsonSchedulingProblem {
     }
 
 
-    // Vertecies area
+    // MachineTasks area
     private emptyNewMachineTask(): void {
-        this._newMachineTask.machine = undefined;
-        this._newMachineTask.task = undefined;
-        this._newMachineTask.time = undefined;
+        this._newMachineTask.machine = '';
+        this._newMachineTask.task = '';
+        this._newMachineTask.time = '';
     }
     private addNewMachineTask(): void {
         if (!this.validateNewMachineTask())
@@ -187,8 +196,26 @@ export class JohnsonSchedulingProblem {
         this.emptyNewMachineTask();
     }
     private validateNewMachineTask(): boolean {
+        if (typeof (this._newMachineTask.machine) === 'undefined' || this._newMachineTask.machine === '') {
+            this._dialogService.alert("Исполнитель не указан!", "Да понял я, понял!", "Ошибка");
+            return false;
+        }
 
-        
+        if (typeof (this._newMachineTask.task) === 'undefined' || this._newMachineTask.task === '') {
+            this._dialogService.alert("Работа не указана!", "Да понял я, понял!", "Ошибка");
+            return false;
+        }
+
+        if (typeof (this._newMachineTask.time) === 'undefined' || this._newMachineTask.time.trim() === '') {
+            this._dialogService.alert("Не задано время выполнения!", "Да понял я, понял!", "Ошибка");
+            return false;
+        }
+
+        let time: number = +this._newMachineTask.time;
+        if (isNaN(time) || time <= 0) {
+            this._dialogService.alert("Поле 'время' должно быть положительным числом отличным от 0!", "Да понял я, понял!", "Ошибка");
+            return false;
+        }
 
         return true;
     }
