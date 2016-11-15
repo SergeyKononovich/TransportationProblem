@@ -120,17 +120,24 @@ export class JohnsonSchedulingProblem {
     private deleteSelectedMachines(): void {
         // Get all selected machines
         let selectedMachines = this._machinesTableModel.data.filter(value => value.selected);
+        
+        // Get all related processes
+        let relatedProc = this._machineTasksTableModel.data.filter((proc: TableMachineTask) => {
+            return selectedMachines.some((m: TableMachine) => m.name === proc.machine);
+        });
 
         // Delete selected machines
         for (let machine of selectedMachines)
             Arrays.remove(this._machinesTableModel.data, machine);
-
+        
+        // Delete related processes
+        for (let proc of relatedProc)
+            Arrays.remove(this._machineTasksTableModel.data, proc);
 
         this.recalcVisibilityOfMachinesDeleteButton();
-        this.recalcVisibilityOfTasksDeleteButton();
 
         // Empty newTask
-        this.emptyNewTask();
+        this.emptyNewMachineTask();
     }
     private machinesTableSelectionChanged(event: any): void {
         this.recalcVisibilityOfMachinesDeleteButton();
@@ -166,12 +173,26 @@ export class JohnsonSchedulingProblem {
         return true;
     }
     private deleteSelectedTasks(): void {
+        // Get all selected tasks
         let selectedTasks = this._tasksTableModel.data.filter(value => value.selected);
-        for (let task of selectedTasks) {
+        
+        // Get all related processes
+        let relatedProc = this._machineTasksTableModel.data.filter((proc: TableMachineTask) => {
+            return selectedTasks.some((m: TableTask) => m.name === proc.task);
+        });
+
+        // Delete selected tasks
+        for (let task of selectedTasks)
             Arrays.remove(this._tasksTableModel.data, task);
-        }
+        
+        // Delete related processes
+        for (let proc of relatedProc)
+            Arrays.remove(this._machineTasksTableModel.data, proc);
 
         this.recalcVisibilityOfTasksDeleteButton();
+
+        // Empty newTask
+        this.emptyNewMachineTask();
     }
     private tasksTableSelectionChanged(event: any): void {
         this.recalcVisibilityOfTasksDeleteButton();
@@ -296,7 +317,7 @@ export class JohnsonSchedulingProblem {
             });
 
             let tasks = new Dictionary<string, Task>();
-            this._machinesTableModel.data.forEach((task: TableTask) => {
+            this._tasksTableModel.data.forEach((task: TableTask) => {
                 let t = new Task(task.name);
                 machines.forEach((key, machine) => {
                     let machineTask = this._machineTasksTableModel.data.find((mt: TableMachineTask) => {

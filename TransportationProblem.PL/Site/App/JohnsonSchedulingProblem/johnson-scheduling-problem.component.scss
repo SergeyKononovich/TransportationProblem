@@ -43,7 +43,7 @@
                     color: $condition-area-title-text-color;
                 } 
                 .machine-area {
-                    max-width: 430px;  
+                    max-width: 200px;  
                     display: flex;
                     flex-direction: column;
                     justify-content: flex-start;
@@ -101,7 +101,7 @@
                     color: $condition-area-title-text-color;
                 } 
                 .task-area {
-                    max-width: 430px;  
+                    max-width: 200px;  
                     display: flex;
                     flex-direction: column;
                     justify-content: flex-start;
@@ -215,6 +215,7 @@
                 min-height: 400px;
                 max-height: 550px; 
                 min-width: 430px;
+                height: 100%;
                 width: 430px;
                 flex-grow: 1;
                 padding: 10px;
@@ -232,37 +233,44 @@
                         margin-bottom: 10px;
                         color: $condition-task-color;
                     }
-                    .table-machine-title {
-                        float: left;
-                        margin-top: 90px;
-                        margin-right: 10px;
-                        color: $condition-machine-color;
-                        text-align: center;
-                        writing-mode: vertical-rl;
-                        text-orientation: upright;
-                        letter-spacing: -0.3em;
-                    }
-                    .table-machine-task-container {
-                        max-height: 400px;
-                        width: 95%;
-                        overflow-y: auto;
-                        overflow-x: auto;
-                        .table-machine-task {
-                            .table-corner-cell {
+                    .table-machine-title-layout {
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: flex-start;
+                        align-items: stretch;
+                        .table-machine-title {
+                            margin-top: 90px;
+                            margin-right: 10px;
+                            color: $condition-machine-color;
+                            text-align: center;
+                            writing-mode: vertical-rl;
+                            text-orientation: upright;
+                            letter-spacing: -0.3em;
+                        }
+                        .table-machine-task-container {
+                            max-height: 400px;
+                            width: 100%;
+                            overflow-y: auto;
+                            overflow-x: auto;
+                            .table-machine-task {
+                                .table-corner-cell {
 
-                            }
-                            .table-header {
+                                }
+                                .table-header {
 
-                            }
-                            .table-task-header {
-                                background-color: $condition-task-cell-color;
-                            }
-                            .table-machine-header {
-                                background-color: $condition-machine-cell-color;
-                            }
-                            .table-cell {
-                                border: 1px solid white;
-                                text-align: center;
+                                }
+                                .table-task-header {
+                                    background-color: $condition-task-cell-color;
+                                }
+                                .table-machine-header {
+                                    background-color: $condition-machine-cell-color;
+                                }
+                                .table-cell {
+                                    border: 1px solid white;
+                                    text-align: center;
+                                    min-height: 20px;
+                                    min-width: 50px;
+                                }
                             }
                         }
                     }
@@ -292,6 +300,8 @@
         flex-direction: column;
         justify-content: flex-start;
         align-items: stretch;
+        min-height: 400px;
+        max-height: 550px; 
         width: inherit;
         min-height: 400px;
         padding: 20px;
@@ -305,60 +315,49 @@
             flex-direction: column;
             justify-content: flex-start;
             align-items: stretch;
+            overflow-y: auto;
 
             .answer {
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
                 align-items: stretch;
-                min-height: 200px;
+                min-height: 250px;
                 padding: 10px;
                 margin-bottom: 10px;
                 margin-right: 20px;
                 background-color: $answer-area-accent-color;
                 .indicators-area {
                     display: flex;
-                    flex-direction: row;
+                    flex-direction: column;
                     justify-content: flex-start;
                     align-items: flex-start;
                     .indicator {
                         margin-top: 10px;
+                        font-size: medium;
                     }
                 }
                 .tasks-downtime-area {
+                    margin-top: 10px;
                     display: flex;
                     flex-direction: column;
                     justify-content: flex-start;
                     align-items: stretch;
-                }
-            }
-            
-            .graph-area-container {
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
-                align-items: stretch;
-                min-height: 400px;
-                max-height: 550px; 
-                min-width: 430px;
-                width: 430px;
-                flex-grow: 1;
-                padding: 10px;
-                margin-bottom: 10px;
-                background-color: $answer-area-accent-color;
-                .graph-area-title {
-                    font-size: medium;
-                    margin-bottom: 8px;
-                    color: $answer-area-title-text-color;
-                } 
-                .graph-area {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: flex-start;
-                    align-items: stretch;
-                    .graph-canvas {
-                        min-height: 400px;
+                    overflow-x: auto;
+                    .table-cell {
+                        border: 1px solid white;
+                        text-align: center;
+                        min-height: 20px;
+                        min-width: 50px;
                     }
+                }
+                .tasks-queue-area {
+                    margin-top: 10px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    align-items: stretch;
+                    overflow-x: auto;
                 }
             }
         }

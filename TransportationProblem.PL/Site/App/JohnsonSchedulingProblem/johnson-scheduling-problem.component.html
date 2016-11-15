@@ -82,19 +82,21 @@
             <div class="table-area-container" mdl-shadow="4">
                 <mdl-layout-title class="table-area-title">Таблица процессов</mdl-layout-title>
                 <div class="table-area">
-                    <mdl-layout-title class="table-machine-title">Исполнители</mdl-layout-title>
                     <mdl-layout-title class="table-task-title">Работы</mdl-layout-title>
-                    <div class="table-machine-task-container">
-                        <table class="table-machine-task">
-                            <tr>
-                                <td class="table-corner-cell"></td>
-                                <td class="table-cell table-header table-task-header" *ngFor="let t of _tasksTableModel.data">{{t.name}}</td>
-                            </tr>
-                            <tr *ngFor="let m of _machinesTableModel.data">
-                                <td class="table-cell table-header table-machine-header">{{m.name}}</td>
-                                <td class="table-cell" *ngFor="let t of _tasksTableModel.data">{{getTimeForMachineAndTask(m.name, t.name)}}</td>
-                            </tr>
-                        </table>
+                    <div class="table-machine-title-layout">
+                        <mdl-layout-title class="table-machine-title">Исполнители</mdl-layout-title>
+                        <div class="table-machine-task-container">
+                            <table class="table-machine-task">
+                                <tr>
+                                    <td class="table-corner-cell"></td>
+                                    <td class="table-cell table-header table-task-header" *ngFor="let t of _tasksTableModel.data">{{t.name}}</td>
+                                </tr>
+                                <tr *ngFor="let m of _machinesTableModel.data">
+                                    <td class="table-cell table-header table-machine-header">{{m.name}}</td>
+                                    <td class="table-cell" *ngFor="let t of _tasksTableModel.data">{{getTimeForMachineAndTask(m.name, t.name)}}</td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -116,31 +118,32 @@
         <mdl-layout-title class="answer-area-title">Результат</mdl-layout-title>
 
         <div class="answer-area">
-            <div class="answer" mdl-shadow="4" *ngFor="let ans of _answer.entries()">
-                <mdl-layout-title class="answer-title">Решение {{ans[0] + 1}}</mdl-layout-title>
+            <div class="answer" mdl-shadow="4" *ngFor="let ans of _answer; let i=index">
+                <mdl-layout-title  class="answer-area-title">Решение {{i + 1}}</mdl-layout-title>
                 <div class="indicators-area">
-                    <mdl-layout-title class="indicator">Общее время выполнения - {{ans[1].AllTime}}</mdl-layout-title>
-                    <mdl-layout-title class="indicator">Общее время простоя - {{ans[1].Downtime}}</mdl-layout-title>
+                    <mdl-layout-title class="indicator">Общее время выполнения - {{ans.AllTime}}</mdl-layout-title>
+                    <mdl-layout-title class="indicator">Общее время простоя - {{ans.Downtime}}</mdl-layout-title>
                 </div>
                 <div class="tasks-downtime-area">
-                    <mdl-layout-title class="answer-title">Время простоя каждой работы:</mdl-layout-title>
+                    <mdl-layout-title  class="answer-area-title">Время простоя каждой машины:</mdl-layout-title>
                     <table class="tasks-downtime-area-table">
                         <tr>
-                            <td>Работы</td>
-                            <td class="tasks-downtime-area-table-cell" *ngFor="let t of ans[1].Tasks">{{t.name}}</td>
+                            <td class="table-cell">Машина</td>
+                            <td class="table-cell" *ngFor="let t of _machinesTableModel.data">{{t.name}}</td>
                         </tr>
                         <tr>
-                            <td>Время простоя</td>
-                            <td class="tasks-downtime-area-table-cell" *ngFor="let t of ans[1].DowntimeList">{{t}}</td>
+                            <td class="table-cell">Время простоя</td>
+                            <td class="table-cell" *ngFor="let t of ans.DowntimeList">{{t}}</td>
                         </tr>
                     </table>
                 </div>
                 <div class="tasks-queue-area">
-                    <mdl-layout-title class="answer-title">Последывательность выполнения:</mdl-layout-title>
+                    <mdl-layout-title class="answer-area-title">Последывательность выполнения:</mdl-layout-title>
                     <table class="tasks-queue-area-table">
                         <tr>
-                            <td class="tasks-queue-area-table-cell" *ngFor="let t of ans[1].Tasks">{{t.name}}</td>
-                            <td> -> </td>
+                            <td class="tasks-queue-area-table-cell" *ngFor="let task of ans.Tasks; let ii=index">
+                                {{task.name}}<mdl-icon *ngIf="ii !== ans.Tasks.length-1">redo</mdl-icon>
+                            </td>
                         </tr>
                     </table>
                 </div>
