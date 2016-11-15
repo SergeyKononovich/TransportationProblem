@@ -281,6 +281,7 @@ export class JohnsonSchedulingProblem {
 
     //// Calc area
     private calcAnswerUseStupidMethod(): void {
+        this._answer = null;
         try {
             let machines = new Dictionary<string, Machine>();
             this._machinesTableModel.data.forEach((value: TableMachine) => {
@@ -304,12 +305,14 @@ export class JohnsonSchedulingProblem {
             });
 
             this._answer = this._taskSolver.SolveStupid(tasks.values(), machines.values());
+            this._dialogService.alert("Решение получено!", "Круто!", "Успех");
         }
         catch (error) {
             this._dialogService.alert(error, "Да понял я, понял!", "Ошибка");
         }
     }
     private calcAnswerUseHeuristicMethod(): void {
+        this._answer = null;
         try {
             let machines = new Dictionary<string, Machine>();
             this._machinesTableModel.data.forEach((value: TableMachine) => {
@@ -333,6 +336,7 @@ export class JohnsonSchedulingProblem {
             });
 
             this._answer = this._taskSolver.SolveHeuristic(tasks.values(), machines.values());
+            this._dialogService.alert("Решение получено!", "Круто!", "Успех");
         }
         catch (error) {
             this._dialogService.alert(error, "Да понял я, понял!", "Ошибка");
