@@ -57,7 +57,7 @@
                         </mdl-select>
                         <mdl-select class="input-selector" [(ngModel)]="_newMachineTask.task" placeholder="Работа">
                             <mdl-option [value]><em>Отмена</em></mdl-option>
-                            <mdl-option *ngFor="let c of _tasksTableModel.data" [value]="c.name">{{c.name}}</mdl-option>
+                            <mdl-option *ngFor="let c of getDataForTaskSelector()" [value]="c.name">{{c.name}}</mdl-option>
                         </mdl-select>
                         <mdl-textfield class="input-element" type="text" label="Время"
                                        pattern="-?[0-9]*(\.[0-9]+)?"
@@ -78,7 +78,6 @@
                     </button>
                 </div>
             </div>
-
 
             <div class="table-area-container" mdl-shadow="4">
                 <mdl-layout-title class="table-area-title">Таблица процессов</mdl-layout-title>
@@ -117,12 +116,33 @@
         <mdl-layout-title class="answer-area-title">Результат</mdl-layout-title>
 
         <div class="answer-area">
-
-            <div class="indicators-area-container" mdl-shadow="4">
-                <mdl-layout-title class="indicators-area-title">Показатели</mdl-layout-title>
+            <div class="answer" mdl-shadow="4" *ngFor="let ans of _answer.entries()">
+                <mdl-layout-title class="answer-title">Решение {{ans[0] + 1}}</mdl-layout-title>
                 <div class="indicators-area">
-                    <mdl-layout-title *ngIf="_ansswer" class="indicator">Общее время выполнения - {{_ansswer.AllTime}}</mdl-layout-title>
-                    <mdl-layout-title *ngIf="_ansswer" class="indicator">Общее время простоя - {{_ansswer.Downtime}}</mdl-layout-title>
+                    <mdl-layout-title class="indicator">Общее время выполнения - {{ans[1].AllTime}}</mdl-layout-title>
+                    <mdl-layout-title class="indicator">Общее время простоя - {{ans[1].Downtime}}</mdl-layout-title>
+                </div>
+                <div class="tasks-downtime-area">
+                    <mdl-layout-title class="answer-title">Время простоя каждой работы:</mdl-layout-title>
+                    <table class="tasks-downtime-area-table">
+                        <tr>
+                            <td>Работы</td>
+                            <td class="tasks-downtime-area-table-cell" *ngFor="let t of ans[1].Tasks">{{t.name}}</td>
+                        </tr>
+                        <tr>
+                            <td>Время простоя</td>
+                            <td class="tasks-downtime-area-table-cell" *ngFor="let t of ans[1].DowntimeList">{{t}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="tasks-queue-area">
+                    <mdl-layout-title class="answer-title">Последывательность выполнения:</mdl-layout-title>
+                    <table class="tasks-queue-area-table">
+                        <tr>
+                            <td class="tasks-queue-area-table-cell" *ngFor="let t of ans[1].Tasks">{{t.name}}</td>
+                            <td> -> </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>

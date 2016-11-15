@@ -29,6 +29,10 @@ $condition-area-accent-color: rgba(#5F9F9F, 0.20);
 $condition-provider-color: #E53935;
 $condition-consumers-color: #689F38;
 $condition-rate-color: #83460b;
+$condition-task-color: rgba(25, 128, 37, 0.90);
+$condition-machine-color: rgba(129, 25, 63, 0.90);
+$condition-task-cell-color: rgba(25, 128, 37, 0.30);
+$condition-machine-cell-color: rgba(129, 25, 63, 0.30);
 
 $calc-action-button-color: unquote("rgba(#{$palette-red-A200}, 0.20)") !default;
 $calc-area-title-text-color: #536d6d;

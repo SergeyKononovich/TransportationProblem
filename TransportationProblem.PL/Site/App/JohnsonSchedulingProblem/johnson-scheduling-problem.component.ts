@@ -83,7 +83,7 @@ export class JohnsonSchedulingProblem {
 
     //// Answer area
     private _taskSolver = new JohnsonTask();
-    private _ansswer: Solution = null;
+    private _answer: Solution[] = [];
     //// Answer area end
 
 
@@ -238,12 +238,16 @@ export class JohnsonSchedulingProblem {
         this._isMachineTasksDeleteButtonVisible = this._machineTasksTableModel
             .data.some((value: IMdlTableModelItem) => value.selected);
     }
+    private getDataForTaskSelector(): IMdlTableModelItem[] {
+        return this._tasksTableModel.data.filter((task: TableTask) =>
+            !this._machineTasksTableModel.data.some((mt: TableMachineTask) =>
+                mt.machine === this._newMachineTask.machine && mt.task === task.name));
+    } 
     
     // Table area
     private getTimeForMachineAndTask(machine: string, task: string): number {
-        let machineTask = this._machineTasksTableModel.data.find(value => {
-            let mt = value as TableMachineTask;
-            return mt.machine === machine && mt.task === task;
+        let machineTask = this._machineTasksTableModel.data.find((value: TableMachineTask) => {
+            return value.machine === machine && value.task === task;
         });
 
         if (machineTask)
@@ -256,18 +260,58 @@ export class JohnsonSchedulingProblem {
 
     //// Calc area
     private calcAnswerUseStupidMethod(): void {
-        
         try {
-            
+            let machines = new Dictionary<string, Machine>();
+            this._machinesTableModel.data.forEach((value: TableMachine) => {
+                machines.setValue(value.name, new Machine(value.name));
+            });
+
+            let tasks = new Dictionary<string, Task>();
+            this._tasksTableModel.data.forEach((task: TableTask) => {
+                let t = new Task(task.name);
+                machines.forEach((key, machine) => {
+                    let machineTask = this._machineTasksTableModel.data.find((mt: TableMachineTask) => {
+                        return mt.machine === key && mt.task === task.name;
+                    });
+
+                    if (machineTask)
+                        t.setTime(machine, +(machineTask as TableMachineTask).time);
+                    else
+                        t.setTime(machine, 0);
+                });
+                tasks.setValue(task.name, t);
+            });
+
+            this._answer = this._taskSolver.SolveStupid(tasks.values(), machines.values());
         }
         catch (error) {
             this._dialogService.alert(error, "Да понял я, понял!", "Ошибка");
         }
     }
     private calcAnswerUseHeuristicMethod(): void {
-
         try {
+            let machines = new Dictionary<string, Machine>();
+            this._machinesTableModel.data.forEach((value: TableMachine) => {
+                machines.setValue(value.name, new Machine(value.name));
+            });
 
+            let tasks = new Dictionary<string, Task>();
+            this._machinesTableModel.data.forEach((task: TableTask) => {
+                let t = new Task(task.name);
+                machines.forEach((key, machine) => {
+                    let machineTask = this._machineTasksTableModel.data.find((mt: TableMachineTask) => {
+                        return mt.machine === key && mt.task === task.name;
+                    });
+
+                    if (machineTask)
+                        t.setTime(machine, +(machineTask as TableMachineTask).time);
+                    else
+                        t.setTime(machine, 0);
+                });
+                tasks.setValue(task.name, t);
+            });
+
+            this._answer = this._taskSolver.SolveHeuristic(tasks.values(), machines.values());
         }
         catch (error) {
             this._dialogService.alert(error, "Да понял я, понял!", "Ошибка");

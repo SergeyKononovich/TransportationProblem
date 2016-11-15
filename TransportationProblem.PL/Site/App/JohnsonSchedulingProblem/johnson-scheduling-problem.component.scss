@@ -230,13 +230,13 @@
                         width: 90%;
                         text-align: center;
                         margin-bottom: 10px;
-                        color: $condition-area-title-text-color;
+                        color: $condition-task-color;
                     }
                     .table-machine-title {
                         float: left;
                         margin-top: 90px;
                         margin-right: 10px;
-                        color: $condition-area-title-text-color;
+                        color: $condition-machine-color;
                         text-align: center;
                         writing-mode: vertical-rl;
                         text-orientation: upright;
@@ -255,10 +255,10 @@
 
                             }
                             .table-task-header {
-
+                                background-color: $condition-task-cell-color;
                             }
                             .table-machine-header {
-
+                                background-color: $condition-machine-cell-color;
                             }
                             .table-cell {
                                 border: 1px solid white;
@@ -301,37 +301,35 @@
             color: $answer-area-title-text-color;
         }
         .answer-area {
-            max-height: 550px;
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             justify-content: flex-start;
             align-items: stretch;
 
-            .indicators-area-container {
+            .answer {
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
                 align-items: stretch;
-                min-height: 400px;
+                min-height: 200px;
                 padding: 10px;
                 margin-bottom: 10px;
                 margin-right: 20px;
                 background-color: $answer-area-accent-color;
-                .indicators-area-title {
-                    font-size: medium;
-                    margin-bottom: 8px;
-                    color: $answer-area-title-text-color;
-                } 
                 .indicators-area {
                     display: flex;
-                    flex-direction: column;
+                    flex-direction: row;
                     justify-content: flex-start;
                     align-items: flex-start;
                     .indicator {
-                        width: 100%;
                         margin-top: 10px;
-                        background-color: aqua;
                     }
+                }
+                .tasks-downtime-area {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    align-items: stretch;
                 }
             }
             

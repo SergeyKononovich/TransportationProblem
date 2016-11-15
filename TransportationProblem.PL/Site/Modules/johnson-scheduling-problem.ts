@@ -1,4 +1,4 @@
-﻿import * as Collections from "typescript-collections/dist/lib";
+﻿import {FactoryDictionary, Queue, Set} from "typescript-collections/dist/lib";
 
 
 interface IComparable<T> {
@@ -16,7 +16,7 @@ function Permutations<T>(list: T[]): T[][] {
     if (list.length == 0)
         return [[]];
 
-    var result: any[] = [];
+    var result:any[] = [];
 
     for (var i = 0; i < list.length; i++) {
         // Clone list (kind of)
@@ -79,14 +79,18 @@ class MacnhineItem {
     public ArrivalTime: number = -1;
 }
 export class Machine {
-    q: Collections.Queue<MacnhineItem>;
-    public DowntimeList: TimeInterval[];
+    private static _id: number = 1;
+    public ID: number;
+
+    private q: Queue<MacnhineItem> = new Queue<MacnhineItem>();
+    public DowntimeList: TimeInterval[] = [];
 
     public get IsEmpty(): boolean { return this.q.isEmpty(); }
     public get EndTime(): number { return !this.q.isEmpty() ? this.q.peek().EndTime : -1; }
     private _lastTime: number;
 
-    constructor() {
+    constructor(public name: string = '') {
+        this.ID = Machine._id++;
         this.Reset();
     }
     public AddTask(task: Task, time: number) {
@@ -123,10 +127,14 @@ export class Machine {
     }
 }
 export class Task {
-    private static _id: number = 1;
-    public get ID(): number { return Task._id++; }
+    public static _id: number = 1;
+    public ID: number;
 
-    private Times: Collections.FactoryDictionary<Machine, number>;
+    constructor(public name: string = '') {
+        this.ID = Task._id++;
+    }
+
+    private Times: FactoryDictionary<Machine, number> = new FactoryDictionary<Machine, number>(() => 0, (machine) => machine.ID.toString());
 
     public getTime(machine: Machine): number { return this.Times.getValue(machine); }
     public setTime(machine: Machine, value: number) { this.Times.setValue(machine, value); }
@@ -155,28 +163,27 @@ export class JohnsonTask {
         tasks.forEach(t => t.setTime(m1, 0));
         tasks.forEach(t => t.setTime(m2, 0));
 
-        let results: Solution[] = [];
         let bestResults: Solution[] = [];
 
         for (var i = 0; i < m - 1; i++) {
             tasks.forEach(t => t.setTime(m1, t.getTime(m1) + t.getTime(machines[i])));
             tasks.forEach(t => t.setTime(m2, t.getTime(m2) + t.getTime(machines[m - 1 - i])));
 
-            var sortedCombintaions = this._johnsonSort(tasks, m1, m2);
-            var temp = this._solve(sortedCombintaions[0], machines);
-            for (var combintation of sortedCombintaions) {
-                var res = this._solve(combintation, machines);
-                if (temp.CompareTo(res) != 0) {
-                    console.warn("warning");
-                }
-                this._updateResults(bestResults, res);
-            }
+            var sortedCombintaion = this._johnsonSort(tasks, m1, m2);
+            var res = this._solve(sortedCombintaion, machines);
             this._updateResults(bestResults, res);
         }
 
         tasks.forEach(t => t.RemoveMachine(m1));
         tasks.forEach(t => t.RemoveMachine(m2));
 
+        let keys = new Set<string>();
+
+        for (var i = bestResults.length - 1; i >= 0; i--) {
+            var key = bestResults[i].Tasks.reduce<string>((_key, val) => _key += "/" + val.ID, "");
+            if (!keys.add(key))
+                bestResults.splice(i, 1);
+        }
         return bestResults;
     }
 
@@ -225,69 +232,14 @@ export class JohnsonTask {
         return cs;
         //return new Solution() { Tasks = tasks, Downtime = _computeDowntime(downtimeList), AllTime = curTime, DowntimeList = dl };
     }
-    private _johnsonSort(tasks: Task[], m1: Machine, m2: Machine): Task[][] {
+    private _johnsonSort(tasks: Task[], m1: Machine, m2: Machine): Task[] {
         var _tasks = tasks.slice();
         _tasks.sort((x, y) => CompareNumbers(Math.min(x.getTime(m1), x.getTime(m2)), (Math.min(y.getTime(m1), y.getTime(m2)))));
         let a: Task[] = [], b: Task[] = [];
         for (var i = 0; i < _tasks.length; i++)
             (_tasks[i].getTime(m1) <= _tasks[i].getTime(m2) ? a : b).push(_tasks[i]);
         b.reverse();
-
-        let generate = (list: Task[], machine: Machine): Task[][] => {
-            let results: Task[][] = [[]];
-            var _originalCopy = list.slice();
-            results.push(_originalCopy);
-
-            if (_originalCopy.length == 0)
-                return results;
-
-            var current = _originalCopy[0].getTime(machine);
-            var count = 1;
-            for (var i = 1; i <= _originalCopy.length; i++) {
-                if (i == _originalCopy.length || _originalCopy[i].getTime(machine) != current) {
-                    var from = i - count;
-                    var range = _originalCopy.slice(from, from + count);
-                    var permutates = Permutations(range);
-
-                    let temp: Task[][] = [[]];
-
-                    for (var original of results) {
-                        for (var permute of permutates) {
-                            var copy = original.slice();
-                            copy.splice(from, count, ...permute);
-                            temp.push(copy);
-                        }
-                    }
-
-                    results = [[]];
-                    results = temp;
-
-                    if (i == _originalCopy.length)
-                        break;
-
-                    current = _originalCopy[i].getTime(machine);
-                    count = 1;
-                }
-                else
-                    count++;
-            }
-
-            return results;
-        };
-        // a = a.concat(b);
-
-        var _a = generate(a, m1);
-        var _b = generate(b, m2);
-
-        var res: Task[][] = [[]];
-        for (var one of _a) {
-            for (var two of _b) {
-                var copy = one.concat(two);
-                res.push(copy);
-            }
-        }
-
-        return res;
+        return a.concat(b);
     }
     private _computeDowntime(downtimeList: TimeInterval[]): number {
         downtimeList.sort(TimeInterval.prototype.Compare);
@@ -308,7 +260,7 @@ export class JohnsonTask {
             if (cmp == 1)
                 return;
             if (cmp == -1)
-                bestResults = [];
+                bestResults.length = 0;
             bestResults.push(result);
         }
     }
