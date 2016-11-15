@@ -78,27 +78,55 @@
                     </button>
                 </div>
             </div>
-        </div>
 
-        <div class="calc-area-container">
-            <button class="calc-answer-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
-                    (click)="calcAnswerUseStupidMethod()">
-                Составить расписание используя эвристический алгоритм
-            </button>
-            <button class="calc-answer-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
-                    (click)="calcAnswerUseHeuristicMethod()">
-                Составить расписание используя эвристический алгоритм
-            </button>
-        </div>
 
-        <div class="answer-area-container">
-            <mdl-layout-title class="answer-area-title">Результат</mdl-layout-title>
-
-            <div class="answer-area">
-
+            <div class="table-area-container" mdl-shadow="4">
+                <mdl-layout-title class="table-area-title">Таблица процессов</mdl-layout-title>
+                <div class="table-area">
+                    <mdl-layout-title class="table-machine-title">Исполнители</mdl-layout-title>
+                    <mdl-layout-title class="table-task-title">Работы</mdl-layout-title>
+                    <div class="table-machine-task-container">
+                        <table class="table-machine-task">
+                            <tr>
+                                <td class="table-corner-cell"></td>
+                                <td class="table-cell table-header table-task-header" *ngFor="let t of _tasksTableModel.data">{{t.name}}</td>
+                            </tr>
+                            <tr *ngFor="let m of _machinesTableModel.data">
+                                <td class="table-cell table-header table-machine-header">{{m.name}}</td>
+                                <td class="table-cell" *ngFor="let t of _tasksTableModel.data">{{getTimeForMachineAndTask(m.name, t.name)}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <dialog-outlet></dialog-outlet>
     </div>
+
+    <div class="calc-area-container">
+        <button class="calc-answer-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
+                (click)="calcAnswerUseStupidMethod()">
+            Решить используя перебор
+        </button>
+        <button class="calc-answer-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
+                (click)="calcAnswerUseHeuristicMethod()">
+            Решить используя эвристический алгоритм
+        </button>
+    </div>
+
+    <div class="answer-area-container">
+        <mdl-layout-title class="answer-area-title">Результат</mdl-layout-title>
+
+        <div class="answer-area">
+
+            <div class="indicators-area-container" mdl-shadow="4">
+                <mdl-layout-title class="indicators-area-title">Показатели</mdl-layout-title>
+                <div class="indicators-area">
+                    <mdl-layout-title *ngIf="_ansswer" class="indicator">Общее время выполнения - {{_ansswer.AllTime}}</mdl-layout-title>
+                    <mdl-layout-title *ngIf="_ansswer" class="indicator">Общее время простоя - {{_ansswer.Downtime}}</mdl-layout-title>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <dialog-outlet></dialog-outlet>
 </div>

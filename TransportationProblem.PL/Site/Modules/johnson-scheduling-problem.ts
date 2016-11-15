@@ -56,7 +56,7 @@ class TimeInterval implements IComparable<TimeInterval>, ICompararer<TimeInterva
         return CompareNumbers(a.End, b.End);
     }
 }
-class Solution implements IComparable<Solution>, ICompararer<Solution>
+export class Solution implements IComparable<Solution>, ICompararer<Solution>
 {
     public AllTime: number;
     public Downtime: number;

@@ -3,7 +3,7 @@ import { MdlDefaultTableModel, MdlDialogService, IMdlTableModelItem } from 'angu
 import { Dictionary }                   from 'typescript-collections/dist/lib';
 import * as Arrays                      from 'typescript-collections/dist/lib/arrays';
 
-import { JohnsonTask, Machine, Task }   from '../../Modules/johnson-scheduling-problem';
+import { JohnsonTask, Machine, Task, Solution }   from '../../Modules/johnson-scheduling-problem';
 
 
 class TableMachine implements IMdlTableModelItem {
@@ -83,6 +83,7 @@ export class JohnsonSchedulingProblem {
 
     //// Answer area
     private _taskSolver = new JohnsonTask();
+    private _ansswer: Solution = null;
     //// Answer area end
 
 
@@ -236,6 +237,19 @@ export class JohnsonSchedulingProblem {
     private recalcVisibilityOfMachineTasksDeleteButton(): void {
         this._isMachineTasksDeleteButtonVisible = this._machineTasksTableModel
             .data.some((value: IMdlTableModelItem) => value.selected);
+    }
+    
+    // Table area
+    private getTimeForMachineAndTask(machine: string, task: string): number {
+        let machineTask = this._machineTasksTableModel.data.find(value => {
+            let mt = value as TableMachineTask;
+            return mt.machine === machine && mt.task === task;
+        });
+
+        if (machineTask)
+            return +(machineTask as TableMachineTask).time;
+
+        return 0;
     }
     //// Condition area end
 

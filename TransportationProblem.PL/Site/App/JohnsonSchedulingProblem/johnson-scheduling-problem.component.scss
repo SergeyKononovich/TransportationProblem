@@ -74,7 +74,7 @@
                         width: 100%;
                         height: 100%;
                         margin-top: 10px;
-                        overflow-y: scroll;
+                        overflow-y: auto;
                     }
                     .delete-selected-button {
                         margin-top: 5px;
@@ -132,7 +132,7 @@
                         width: 100%;
                         height: 100%;
                         margin-top: 10px;
-                        overflow-y: scroll;
+                        overflow-y: auto;
                     }
                     .delete-selected-button {
                         margin-top: 5px;
@@ -197,12 +197,74 @@
                         width: 100%;
                         height: 100%;
                         margin-top: 10px;
-                        overflow-y: scroll;
+                        overflow-y: auto;
                     }
                     .delete-selected-button {
                         margin-top: 5px;
                         background: $condition-action-button-color;
                         color: $condition-area-title-text-color;
+                    }
+                }
+            }
+
+            .table-area-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: stretch;
+                min-height: 400px;
+                max-height: 550px; 
+                min-width: 430px;
+                width: 430px;
+                flex-grow: 1;
+                padding: 10px;
+                margin-bottom: 10px;
+                background-color: $condition-area-accent-color;
+                .table-area-title {
+                    font-size: medium;
+                    margin-bottom: 8px;
+                    color: $condition-area-title-text-color;
+                } 
+                .table-area {
+                    .table-task-title {
+                        width: 90%;
+                        text-align: center;
+                        margin-bottom: 10px;
+                        color: $condition-area-title-text-color;
+                    }
+                    .table-machine-title {
+                        float: left;
+                        margin-top: 90px;
+                        margin-right: 10px;
+                        color: $condition-area-title-text-color;
+                        text-align: center;
+                        writing-mode: vertical-rl;
+                        text-orientation: upright;
+                        letter-spacing: -0.3em;
+                    }
+                    .table-machine-task-container {
+                        max-height: 400px;
+                        width: 95%;
+                        overflow-y: auto;
+                        overflow-x: auto;
+                        .table-machine-task {
+                            .table-corner-cell {
+
+                            }
+                            .table-header {
+
+                            }
+                            .table-task-header {
+
+                            }
+                            .table-machine-header {
+
+                            }
+                            .table-cell {
+                                border: 1px solid white;
+                                text-align: center;
+                            }
+                        }
                     }
                 }
             }
@@ -245,7 +307,7 @@
             justify-content: flex-start;
             align-items: stretch;
 
-            .arc-area-container {
+            .indicators-area-container {
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
@@ -255,27 +317,20 @@
                 margin-bottom: 10px;
                 margin-right: 20px;
                 background-color: $answer-area-accent-color;
-                .arc-area-title {
+                .indicators-area-title {
                     font-size: medium;
                     margin-bottom: 8px;
                     color: $answer-area-title-text-color;
                 } 
-                .arc-area {
+                .indicators-area {
                     display: flex;
                     flex-direction: column;
                     justify-content: flex-start;
                     align-items: flex-start;
-                    .arcs-table {
-                        max-height: 250px;
+                    .indicator {
                         width: 100%;
-                        height: 100%;
                         margin-top: 10px;
-                        overflow-y: scroll;
-                    }
-                    .delete-selected-button {
-                        margin-top: 5px;
-                        background: $condition-action-button-color;
-                        color: $answer-area-title-text-color;
+                        background-color: aqua;
                     }
                 }
             }
