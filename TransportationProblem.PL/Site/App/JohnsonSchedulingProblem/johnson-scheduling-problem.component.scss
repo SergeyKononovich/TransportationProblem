@@ -51,20 +51,20 @@
                     .add-machine-area {
                         min-height: 130px;
                         height: 130px;
-                        width: 200px;    
+                        width: 210px;    
                         display: flex;
                         flex-direction: column;
                         justify-content: flex-start;
                         align-items: center;
                         background-color: $condition-area-primary-color; 
                         .input-element {
-                            width: 190px;
+                            width: 200px;
                             margin: 10px;
                             color: $condition-area-title-text-color;
                         }
                         .add-machine-button {
                             margin-bottom: 5px;
-                            margin-left: 80px;
+                            margin-left: 85px;
                             background: $condition-action-button-color;
                             color: $condition-area-title-text-color;
                         }
@@ -159,7 +159,7 @@
                     color: $condition-area-title-text-color;
                 } 
                 .machine-task-area {
-                    max-width: 440px;  
+                    max-width: 400px;  
                     display: flex;
                     flex-direction: column;
                     justify-content: flex-start;
@@ -167,7 +167,7 @@
                     .add-machine-task-area {
                         min-height: 130px;
                         height: 130px;
-                        width: 440px;    
+                        width: 400px;    
                         display: flex;
                         flex-wrap: wrap;
                         flex-direction: row;
@@ -175,19 +175,19 @@
                         align-items: flex-start;
                         background-color: $condition-area-primary-color;  
                         .input-selector {
-                            width: 140px;
+                            width: 180px;
                             height: 30px;
                             margin: 5px 10px 30px 10px;
                             color: $condition-area-title-text-color;
                         }
                         .input-element {
-                            width: 100px;
+                            width: 160px;
                             margin: 10px;
                             color: $condition-area-title-text-color;
                         }
                         .add-machine-task-button {
-                            margin-bottom: 5px;
-                            margin-left: 325px;
+                            margin-top: 22px;
+                            margin-left: 105px;
                             background: $condition-action-button-color;
                             color: $condition-area-title-text-color;
                         }

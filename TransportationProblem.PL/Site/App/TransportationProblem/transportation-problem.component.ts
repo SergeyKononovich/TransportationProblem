@@ -386,25 +386,24 @@ export class TransportationProblem {
 
     //// Calc area
     private calcAnswer(): void {
-        let newNetwork = new Network();
-
-        let vertices = new Dictionary<string, Vertex>();
-        for (let el of this._verticesTableModel.data) {
-            let vertTable = el as TableVertex;
-            let vert = new Vertex(vertTable.name, +vertTable.power, vertTable.priority);
-            vertices.setValue(vert.name, vert);
-            newNetwork.addVertex(vert);
-        }
-
-        this._currentArcsInNetwork = [];
-        for (let el of this._arcsTableModel.data) {
-            let arcTable = el as TableArc;
-            let arc = new Arc(vertices.getValue(arcTable.source), vertices.getValue(arcTable.slink), +arcTable.rate);
-            this._currentArcsInNetwork.push(arc);
-            newNetwork.addArc(arc);
-        }
-
         try {
+            let newNetwork = new Network();
+
+            let vertices = new Dictionary<string, Vertex>();
+            for (let el of this._verticesTableModel.data) {
+                let vertTable = el as TableVertex;
+                let vert = new Vertex(vertTable.name, +vertTable.power, vertTable.priority);
+                vertices.setValue(vert.name, vert);
+                newNetwork.addVertex(vert);
+            }
+
+            this._currentArcsInNetwork = [];
+            for (let el of this._arcsTableModel.data) {
+                let arcTable = el as TableArc;
+                let arc = new Arc(vertices.getValue(arcTable.source), vertices.getValue(arcTable.slink), +arcTable.rate);
+                this._currentArcsInNetwork.push(arc);
+                newNetwork.addArc(arc);
+            }
             newNetwork.optimize();
             this._network = newNetwork;
             this.initAnswerTable();
