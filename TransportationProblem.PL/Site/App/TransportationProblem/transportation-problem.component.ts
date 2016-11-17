@@ -7,9 +7,10 @@ var Cytoscape = require('cytoscape');
 var regCose = require('cytoscape-cose-bilkent/src');
 
 import { Network, Vertex, Arc } from '../../Modules/transportation-problem';
+import { TransportationProblemExport } from '../../Modules/import-export';
 
 
-class TableVertex implements IMdlTableModelItem {
+export class TableVertex implements IMdlTableModelItem {
     public name: string = '';
     public power: string = '';
     public priority: boolean = false;
@@ -27,8 +28,7 @@ class TableVertex implements IMdlTableModelItem {
     }
 }
 
-
-class TableArc implements IMdlTableModelItem {
+export class TableArc implements IMdlTableModelItem {
     public source: string = '';
     public slink: string = '';
     public rate: string = '';
@@ -46,7 +46,7 @@ class TableArc implements IMdlTableModelItem {
     }
 }
 
-class TableAnswer implements IMdlTableModelItem {
+export class TableAnswer implements IMdlTableModelItem {
     public source: string = '';
     public slink: string = '';
     public rate: string = '';
@@ -173,7 +173,7 @@ export class TransportationProblem {
 
             zoom: 1,
             minZoom: 0.3,
-            maxZoom: 2
+            maxZoom: 1.5
         });
 
         this._answerGraph = Cytoscape({
@@ -224,7 +224,7 @@ export class TransportationProblem {
 
             zoom: 1,
             minZoom: 0.3,
-            maxZoom: 2
+            maxZoom: 1.5
         });
     }
 
@@ -237,6 +237,12 @@ export class TransportationProblem {
         this._newVertex.priority = false;
     }
     private addNewVertex(): void {
+
+        TransportationProblemExport.GetSamplesName('A1');
+
+
+
+
         if (!this.validateNewVertex())
             return;
 
@@ -400,13 +406,15 @@ export class TransportationProblem {
 
         this._conditionGraph.layout({
             name: 'cose-bilkent',
-            padding: 60
+            padding: 100,
+            idealEdgeLength: 70
         });
     }
     private restructConditionGraph(): void {
         this._conditionGraph.layout({
             name: 'cose-bilkent',
-            padding: 60
+            padding: 100,
+            idealEdgeLength: 70
         });
     }
     //// Condition area end
@@ -491,13 +499,15 @@ export class TransportationProblem {
 
         this._answerGraph.layout({
             name: 'cose-bilkent',
-            padding: 60
+            padding: 100,
+            idealEdgeLength: 130
         });
     }
     private restructAnswerGraph(): void {
         this._answerGraph.layout({
             name: 'cose-bilkent',
-            padding: 60
+            padding: 100,
+            idealEdgeLength: 130
         });
     }
     //// Answer area end
