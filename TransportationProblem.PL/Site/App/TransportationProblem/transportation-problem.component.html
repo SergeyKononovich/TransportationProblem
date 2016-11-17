@@ -4,7 +4,7 @@
 
         <div class="condition-area">
             <div class="vertex-area-container" mdl-shadow="4">
-                <mdl-layout-title class="vertex-area-title">Участники</mdl-layout-title>
+                <mdl-layout-title class="vertex-area-title">Узлы</mdl-layout-title>
                 <div class="vertex-area">
                     <div class="add-vertex-area" mdl-shadow="2">
                         <mdl-textfield class="input-element" type="text" label="Название"
@@ -68,12 +68,15 @@
                 <mdl-layout-title class="graph-area-title">Граф связей</mdl-layout-title>
                 <div class="graph-area">
                     <div class="graph-labels">
-                        <div class="graph-label"><div class="provider-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - поставщики</mdl-layout-title></div>
-                        <div class="graph-label"><div class="consumers-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - потребители</mdl-layout-title></div>
+                        <div class="graph-label"><div class="provider-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - поставщики (мощность)</mdl-layout-title></div>
+                        <div class="graph-label"><div class="consumers-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - потребители (мощность)</mdl-layout-title></div>
                         <div class="graph-label"><div class="rate-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - тарифы</mdl-layout-title></div>
                     </div>
                     <div class="graph-canvas" id="conditionGraphCanvas" #conditionGraphCanvas></div>
                 </div>
+                <button class="button" (click)="restructConditionGraph()" mdl-button mdl-button-type="raised">
+                    Перестроить
+                </button>
             </div>
         </div>
     </div>
@@ -104,9 +107,12 @@
                     <div class="graph-labels">
                         <div class="graph-label"><div class="provider-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - поставщики</mdl-layout-title></div>
                         <div class="graph-label"><div class="consumers-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - потребители</mdl-layout-title></div>
-                        <div class="graph-label"><div class="flow-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - поток</mdl-layout-title></div>
+                        <div class="graph-label"><div class="flow-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - поток (стоимость)</mdl-layout-title></div>
                     </div>
                     <div class="graph-canvas" id="answerGraphCanvas" #answerGraphCanvas></div>
+                    <button class="button" (click)="restructAnswerGraph()" mdl-button mdl-button-type="raised">
+                        Перестроить
+                    </button>
                 </div>
             </div>
         </div>

@@ -103,15 +103,17 @@ export class JohnsonSchedulingProblem {
         this._machinesTableModel.data.push(this._newMachine.copy());
 
         this.emptyNewMachine();
+
+        this._answer = null;
     }
     private validateNewMachine(): boolean {
         if (this._newMachine.name.trim() === '') {
-            this._dialogService.alert("Название исполнителя не может быть пустым!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Название исполнителя не может быть пустым!", "Ок", "Ошибка");
             return false;
         }
 
         if (this._machinesTableModel.data.some((value: TableMachine) => value.name === this._newMachine.name)) {
-            this._dialogService.alert("Исполнитель с таким названием уже существует!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Исполнитель с таким названием уже существует!", "Ок", "Ошибка");
             return false;
         }
 
@@ -138,6 +140,8 @@ export class JohnsonSchedulingProblem {
 
         // Empty newTask
         this.emptyNewMachineTask();
+
+        this._answer = null;
     }
     private machinesTableSelectionChanged(event: any): void {
         this.recalcVisibilityOfMachinesDeleteButton();
@@ -158,15 +162,17 @@ export class JohnsonSchedulingProblem {
         this._tasksTableModel.data.push(this._newTask.copy());
 
         this.emptyNewTask();
+
+        this._answer = null;
     }
     private validateNewTask(): boolean {
         if (this._newTask.name.trim() === '') {
-            this._dialogService.alert("Название работы не может быть пустым!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Название работы не может быть пустым!", "Ок", "Ошибка");
             return false;
         }
 
         if (this._tasksTableModel.data.some((value: TableTask) => value.name === this._newTask.name)) {
-            this._dialogService.alert("Работа с таким названием уже существует!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Работа с таким названием уже существует!", "Ок", "Ошибка");
             return false;
         }
 
@@ -193,6 +199,8 @@ export class JohnsonSchedulingProblem {
 
         // Empty newTask
         this.emptyNewMachineTask();
+
+        this._answer = null;
     }
     private tasksTableSelectionChanged(event: any): void {
         this.recalcVisibilityOfTasksDeleteButton();
@@ -216,26 +224,28 @@ export class JohnsonSchedulingProblem {
         this._machineTasksTableModel.data.push(this._newMachineTask.copy());
 
         this.emptyNewMachineTask();
+
+        this._answer = null;
     }
     private validateNewMachineTask(): boolean {
         if (typeof (this._newMachineTask.machine) === 'undefined' || this._newMachineTask.machine === '') {
-            this._dialogService.alert("Исполнитель не указан!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Исполнитель не указан!", "Ок", "Ошибка");
             return false;
         }
 
         if (typeof (this._newMachineTask.task) === 'undefined' || this._newMachineTask.task === '') {
-            this._dialogService.alert("Работа не указана!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Работа не указана!", "Ок", "Ошибка");
             return false;
         }
 
         if (typeof (this._newMachineTask.time) === 'undefined' || this._newMachineTask.time.trim() === '') {
-            this._dialogService.alert("Не задано время выполнения!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Не задано время выполнения!", "Ок", "Ошибка");
             return false;
         }
 
         let time: number = +this._newMachineTask.time;
         if (isNaN(time) || time <= 0) {
-            this._dialogService.alert("Поле 'время' должно быть положительным числом отличным от 0!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Поле 'время' должно быть положительным числом отличным от 0!", "Ок", "Ошибка");
             return false;
         }
 
@@ -249,8 +259,9 @@ export class JohnsonSchedulingProblem {
         for (let machineTask of selectedMachineTasks)
             Arrays.remove(this._machineTasksTableModel.data, machineTask);
 
-
         this.recalcVisibilityOfMachineTasksDeleteButton();
+
+        this._answer = null;
     }
     private machineTasksTableSelectionChanged(event: any): void {
         this.recalcVisibilityOfMachineTasksDeleteButton();
@@ -305,10 +316,10 @@ export class JohnsonSchedulingProblem {
             });
 
             this._answer = this._taskSolver.SolveStupid(tasks.values(), machines.values());
-            this._dialogService.alert("Решение получено!", "Круто!", "Успех");
+            this._dialogService.alert("Решение получено!", "Ок", "Успех");
         }
         catch (error) {
-            this._dialogService.alert(error, "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert(error, "Ок", "Ошибка");
         }
     }
     private calcAnswerUseHeuristicMethod(): void {
@@ -336,10 +347,10 @@ export class JohnsonSchedulingProblem {
             });
 
             this._answer = this._taskSolver.SolveHeuristic(tasks.values(), machines.values());
-            this._dialogService.alert("Решение получено!", "Круто!", "Успех");
+            this._dialogService.alert("Решение получено!", "Ок", "Успех");
         }
         catch (error) {
-            this._dialogService.alert(error, "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert(error, "Ок", "Ошибка");
         }
     }
     //// Calc area end

@@ -134,7 +134,7 @@ export class TransportationProblem {
                     selector: 'node',
                     style: {
                         'background-color': '#C6FF00',
-                        'label': 'data(id)',
+                        'label': 'data(label)',
                         'text-rotation': 'autorotate'
                     }
                 },
@@ -158,6 +158,7 @@ export class TransportationProblem {
                     selector: '.provider',
                     style: {
                         'background-color': '#E53935',
+                        'color': '#E53935'
                     }
                 },
 
@@ -165,9 +166,14 @@ export class TransportationProblem {
                     selector: '.consumers',
                     style: {
                         'background-color': '#689F38',
+                        'color': '#689F38'
                     }
                 }
-            ]
+            ],
+
+            zoom: 1,
+            minZoom: 0.3,
+            maxZoom: 2
         });
 
         this._answerGraph = Cytoscape({
@@ -188,7 +194,7 @@ export class TransportationProblem {
                     selector: 'edge',
                     style: {
                         'width': 3,
-                        'label': 'data(flow)',
+                        'label': 'data(label)',
                         'color': '#231e8b',
                         'text-margin-y': -10,
                         'text-rotation': 'autorotate',
@@ -203,6 +209,7 @@ export class TransportationProblem {
                     selector: '.provider',
                     style: {
                         'background-color': '#E53935',
+                        'color': '#E53935'
                     }
                 },
 
@@ -210,9 +217,14 @@ export class TransportationProblem {
                     selector: '.consumers',
                     style: {
                         'background-color': '#689F38',
+                        'color': '#689F38'
                     }
                 }
-            ]
+            ],
+
+            zoom: 1,
+            minZoom: 0.3,
+            maxZoom: 2
         });
     }
 
@@ -235,23 +247,23 @@ export class TransportationProblem {
     private validateNewVertex(): boolean {
 
         if (typeof (this._newVertex.name) === 'undefined' || this._newVertex.name.trim() === '') {
-            this._dialogService.alert("Название участника не может быть пустым!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Название узла не может быть пустым!", "Ок", "Ошибка");
             return false;
         }
 
         if (this._verticesTableModel.data.some((value: TableVertex) => value.name === this._newVertex.name)) {
-            this._dialogService.alert("Участник с таким названием уже существует!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Узел с таким названием уже существует!", "Ок", "Ошибка");
             return false;
         }
 
         if (this._newVertex.power.trim() === '') {
-            this._dialogService.alert("Не задано поле 'мощность' участника!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Не задано поле 'мощность' узла!", "Ок", "Ошибка");
             return false;
         }
 
         let power: number = +this._newVertex.power;
         if (isNaN(power) || power === 0) {
-            this._dialogService.alert("Поле 'мощность' должно быть числом!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Поле 'мощность' должно быть числом!", "Ок", "Ошибка");
             return false;
         }
 
@@ -311,23 +323,23 @@ export class TransportationProblem {
     private validateNewArc(): boolean {
 
         if (typeof (this._newArc.source) === 'undefined' || this._newArc.source === '') {
-            this._dialogService.alert("Отправитель не указан!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Отправитель не указан!", "Ок", "Ошибка");
             return false;
         }
 
         if (typeof (this._newArc.slink) === 'undefined' || this._newArc.slink === '') {
-            this._dialogService.alert("Получатель не указан!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Получатель не указан!", "Ок", "Ошибка");
             return false;
         }
 
         if (typeof (this._newArc.rate) === 'undefined' || this._newArc.rate.trim() === '') {
-            this._dialogService.alert("Не задано поле 'ставка'!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Не задано поле 'ставка'!", "Ок", "Ошибка");
             return false;
         }
 
         let rate: number = +this._newArc.rate;
         if (isNaN(rate) || rate === 0) {
-            this._dialogService.alert("Поле 'ставка' должно быть числом отличным от 0!", "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert("Поле 'тариф' должно быть числом отличным от 0!", "Ок", "Ошибка");
             return false;
         }
 
@@ -363,10 +375,20 @@ export class TransportationProblem {
 
         for (let el of this._verticesTableModel.data) {
             let vert = el as TableVertex;
+            let label = vert.name + ' (' + vert.power + ')';
             if (+vert.power > 0)
-                this._conditionGraph.add([{ group: "nodes", data: { id: vert.name }, classes: 'provider' }]);
+                this._conditionGraph.add([{
+                    group: "nodes",
+                    data: {
+                        id: vert.name, label: label },
+                    classes: 'provider'
+                }]);
             else
-                this._conditionGraph.add([{ group: "nodes", data: { id: vert.name }, classes: 'consumers' }]);
+                this._conditionGraph.add([{
+                    group: "nodes",
+                    data: { id: vert.name, label: label },
+                    classes: 'consumers'
+                }]);
         }
 
         for (let el of this._arcsTableModel.data) {
@@ -376,6 +398,12 @@ export class TransportationProblem {
             ]);
         }
 
+        this._conditionGraph.layout({
+            name: 'cose-bilkent',
+            padding: 60
+        });
+    }
+    private restructConditionGraph(): void {
         this._conditionGraph.layout({
             name: 'cose-bilkent',
             padding: 60
@@ -408,10 +436,10 @@ export class TransportationProblem {
             this._network = newNetwork;
             this.initAnswerTable();
             this.renderAnswerGraph();
-            this._dialogService.alert("Оптимальный план перевозок построен!", "Круто!", "Успех");
+            this._dialogService.alert("Оптимальный план перевозок построен!", "Ок", "Успех");
         }
         catch (error) {
-            this._dialogService.alert(error, "Да понял я, понял!", "Ошибка");
+            this._dialogService.alert(error, "Ок", "Ошибка");
         }
     }
     //// Calc area end
@@ -441,7 +469,6 @@ export class TransportationProblem {
     }
 
     // Graph area
-
     private renderAnswerGraph(): void {
 
         this._answerGraph.remove(this._answerGraph.elements("*"));
@@ -456,11 +483,18 @@ export class TransportationProblem {
 
         for (let el of this._answerTableModel.data.filter(el => el.selected)) {
             let arc = el as TableAnswer;
+            let label = arc.flow + ' (' + arc.price + ')';
             this._answerGraph.add([
-                { group: "edges", data: { id: arc.source + arc.slink, source: arc.source, target: arc.slink, flow: arc.flow } }
+                { group: "edges", data: { id: arc.source + arc.slink, source: arc.source, target: arc.slink, label: label } }
             ]);
         }
 
+        this._answerGraph.layout({
+            name: 'cose-bilkent',
+            padding: 60
+        });
+    }
+    private restructAnswerGraph(): void {
         this._answerGraph.layout({
             name: 'cose-bilkent',
             padding: 60
