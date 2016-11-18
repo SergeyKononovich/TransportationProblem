@@ -4,6 +4,7 @@ import { FormsModule }          from '@angular/forms';
 import { MdlModule }            from 'angular2-mdl';
 import { MdlSelectModule }      from '@angular2-mdl-ext/select';
 import { ResponsiveModule }     from 'ng2-responsive';
+import { FileUploadModule }     from 'ng2-file-upload/ng2-file-upload';
 
 import { AppComponent }             from './app.component';
 import { TransportationProblem }    from './TransportationProblem/transportation-problem.component';
@@ -18,7 +19,8 @@ import { appRoutingModule }         from './app.routing';
         MdlModule,
         MdlSelectModule,
         ResponsiveModule,
-        appRoutingModule
+        appRoutingModule,
+        FileUploadModule
     ],
     declarations: [
         AppComponent,

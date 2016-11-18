@@ -2,6 +2,7 @@
 import { MdlDefaultTableModel, MdlDialogService, IMdlTableModelItem } from 'angular2-mdl';
 import { Dictionary }           from 'typescript-collections/dist/lib';
 import * as Arrays              from 'typescript-collections/dist/lib/arrays';
+import { Workbook }             from 'kexcel/ts/Workbook';
 
 var Cytoscape = require('cytoscape');
 var regCose = require('cytoscape-cose-bilkent/src');
@@ -229,6 +230,23 @@ export class TransportationProblem {
     }
 
 
+    fileChanged(input: any): void {
+        var reader = new FileReader();
+        
+        reader.addEventListener("load", (event: any) => {
+            var data = event.target.result;
+            //TransportationProblemExport.GetSamplesName(data, 'A1');
+        }, false);
+
+        reader.readAsBinaryString(input.target.files[0]);
+        Workbook.open(input.target.files[0].name).then(function (workbook: Workbook) {
+            var sheet = workbook.getSheet(0);
+            sheet.setCellValue(1, 1, 'Hello World!');
+            sheet.setRow(2, ['Hello', 'even', 'more', 'Worlds']);
+            sheet.setRow(3, [1, '+', 2, 'equals', '=A3+C3']);
+        });
+    }
+
     //// Condition area
     // Vertecies area
     private emptyNewVertex(): void {
@@ -237,12 +255,6 @@ export class TransportationProblem {
         this._newVertex.priority = false;
     }
     private addNewVertex(): void {
-
-        TransportationProblemExport.GetSamplesName('A1');
-
-
-
-
         if (!this.validateNewVertex())
             return;
 
