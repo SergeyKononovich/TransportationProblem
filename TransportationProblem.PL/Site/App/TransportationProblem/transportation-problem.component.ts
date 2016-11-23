@@ -2,13 +2,12 @@
 import { MdlDefaultTableModel, MdlDialogService, IMdlTableModelItem } from 'angular2-mdl';
 import { Dictionary }           from 'typescript-collections/dist/lib';
 import * as Arrays              from 'typescript-collections/dist/lib/arrays';
-import { Workbook }             from 'kexcel/ts/Workbook';
 
 var Cytoscape = require('cytoscape');
 var regCose = require('cytoscape-cose-bilkent/src');
 
 import { Network, Vertex, Arc } from '../../Modules/transportation-problem';
-import { TransportationProblemExport } from '../../Modules/import-export';
+import { ExcelTransportationProblemExport, TransportationProblemSample } from '../../Modules/import-export';
 
 
 export class TableVertex implements IMdlTableModelItem {
@@ -75,6 +74,9 @@ export class TableAnswer implements IMdlTableModelItem {
     styleUrls: ['./transportation-problem.component.scss']
 })
 export class TransportationProblem {
+
+    private _excelTransportationProblemExport: ExcelTransportationProblemExport = null;
+
     //// Condition area
     // Vertecies area
     private _newVertex = new TableVertex();
@@ -231,20 +233,16 @@ export class TransportationProblem {
 
 
     fileChanged(input: any): void {
-        var reader = new FileReader();
+        let reader = new FileReader();
         
         reader.addEventListener("load", (event: any) => {
-            var data = event.target.result;
-            //TransportationProblemExport.GetSamplesName(data, 'A1');
+            let data = event.target.result;
+            this._excelTransportationProblemExport = new ExcelTransportationProblemExport(data);
+            let sheetName = this._excelTransportationProblemExport.GetSheetsNames()[0];
+            let samples = this._excelTransportationProblemExport.GetSamples(sheetName, 'D9');
         }, false);
 
         reader.readAsBinaryString(input.target.files[0]);
-        Workbook.open(input.target.files[0].name).then(function (workbook: Workbook) {
-            var sheet = workbook.getSheet(0);
-            sheet.setCellValue(1, 1, 'Hello World!');
-            sheet.setRow(2, ['Hello', 'even', 'more', 'Worlds']);
-            sheet.setRow(3, [1, '+', 2, 'equals', '=A3+C3']);
-        });
     }
 
     //// Condition area

@@ -1,14 +1,56 @@
-﻿import * as XLSX    from 'ts-xlsx';
+﻿//import { IWorkBook, IWorkSheet, IWorkSheetCell, read as xlsxRead, utils as xlsxUtils }   from 'ts-xlsx';
 import { TableVertex, TableArc, TableAnswer } from '../App/TransportationProblem/transportation-problem.component';
 
+var XLSX = require('ts-xlsx');
+
+type CellType = { row: number, column: string };
+
+export class TransportationProblemSample {
+    name: string;
+    verts: TableVertex[];
+    arcs: TableArc[];
+}
+
+export class ExcelTransportationProblemExport {
+
+    private _workbook: any = null;
 
 
-export class TransportationProblemExport{
-    public static GetSamplesName(data: any, startCell: string) {
+    public constructor(data: any) {
+        this._workbook = XLSX.read(data, { type: 'binary' });
+    }
 
-        var workbook = XLSX.read(data);
-        var worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        var desired_cell = worksheet[startCell];
-        desired_cell = worksheet[startCell];
+    public GetSheetsNames(): string[] {
+
+        return this._workbook.SheetNames;
+    }
+
+    public GetSamples(sheetName: string, startCell: string): TransportationProblemSample[] {
+
+        let samples: TransportationProblemSample[] = [];
+        let worksheet = this._workbook.Sheets[sheetName];
+
+        //if (typeof (this._newVertex.name) === 'undefined')
+        //    throw 
+        let a = XLSX.utils.encode_cell({ c: 1, r: 1 });
+        let sampleNameCell = worksheet[startCell];
+        let startCellColumnRowNames = this.GetRowColumn(startCell);
+        while (typeof (sampleNameCell) !== 'undefined') {
+            let sample = new TransportationProblemSample();
+            sample.name = worksheet[startCell].v;
+
+            let cell: CellType = {
+                row: startCellColumnRowNames.row,
+                column: startCellColumnRowNames.column
+            };
+            
+        }
+
+        return samples;
+    }
+
+    private GetRowColumn(name: string): CellType {
+        let firstNumber = name.search('[0-9]');
+        return { row: +name.substring(firstNumber), column: name.substring(0, firstNumber) };
     }
 }
