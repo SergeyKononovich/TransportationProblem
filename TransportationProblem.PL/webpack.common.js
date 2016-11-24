@@ -14,8 +14,20 @@ module.exports = {
 
     resolve: {
         modulesDirectories: ["web_modules", "node_modules"],
-        extensions: ['', '.ts', '.js', '.json', '.css', '.scss', '.html']
+        extensions: ['', '.ts', '.js', '.json', '.css', '.scss', '.html', '.xml', '.json', '.md']
     },
+
+    node: {
+        fs: 'empty',
+        file: 'empty',
+        directory: 'empty'
+    },
+
+    externals: [
+        {
+            './cptable': 'var cptable'
+        }
+    ],
 
     module: {
         loaders: [
@@ -63,6 +75,18 @@ module.exports = {
                 test: /\.scss$/,
                 include: helper.root('Site', 'App'),
                 loaders: ['exports-loader?module.exports.toString()', 'css?sourceMap', 'resolve-url', 'sass?sourceMap']
+            },
+            {
+                test: /\.xml$/,
+                loader: 'xml'
+            },
+            {
+                test: /\.json$/,
+                loader: 'json'
+            },
+            {
+                test: /\.md$/,
+                loader: 'md'
             }
         ]
     },

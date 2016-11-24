@@ -233,6 +233,7 @@ export class TransportationProblem {
 
 
     fileChanged(input: any): void {
+
         let reader = new FileReader();
         
         reader.addEventListener("load", (event: any) => {

@@ -1,9 +1,10 @@
-﻿//import { IWorkBook, IWorkSheet, IWorkSheetCell, read as xlsxRead, utils as xlsxUtils }   from 'ts-xlsx';
-import { TableVertex, TableArc, TableAnswer } from '../App/TransportationProblem/transportation-problem.component';
+﻿import { TableVertex, TableArc, TableAnswer } from '../App/TransportationProblem/transportation-problem.component';
 
-var XLSX = require('ts-xlsx');
+var XLSX = require('xlsx');
+
 
 type CellType = { row: number, column: string };
+
 
 export class TransportationProblemSample {
     name: string;
@@ -33,6 +34,7 @@ export class ExcelTransportationProblemExport {
         //if (typeof (this._newVertex.name) === 'undefined')
         //    throw 
         let a = XLSX.utils.encode_cell({ c: 1, r: 1 });
+
         let sampleNameCell = worksheet[startCell];
         let startCellColumnRowNames = this.GetRowColumn(startCell);
         while (typeof (sampleNameCell) !== 'undefined') {

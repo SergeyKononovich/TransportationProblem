@@ -9,6 +9,7 @@
     "postinstall": "typings install",
     "reinstall": "reinstall",
     "lint": "tslint ./Site/**/*.ts -t verbose",
+    "display-error-detailsss": "webpack --display-error-details --display-cached",
     "build-prodaction": "webpack --config webpack.prod.js --progress --profile --bail",
     "build-development": "webpack --config webpack.dev.js --progress --profile --bail",
     "start-development-watch": "webpack --config webpack.dev.js --watch --progress --profile --bail",
@@ -39,8 +40,7 @@
     "ng2-responsive": "0.4.6",
     "cytoscape": "2.7.10",
     "cytoscape-cose-bilkent": "1.3.8",
-    "ts-xlsx": "0.0.8",
-    "kexcel": "3.1.4"
+    "xlsx": "0.8.0"
   },
   "devDependencies": {
     "typescript": "^2.0.2",
@@ -66,6 +66,9 @@
     "style-loader": "^0.13.1",
     "exports-loader": "0.6.3",
     "ts-loader": "0.8.2",
+    "xml-loader": "1.1.0",
+    "json-loader": "0.5.4",
+    "md-loader": "0.1.0",
     "copy-webpack-plugin": "3.0.1",
     "webpack-dev-server": "^1.16.1",
     "webpack-merge": "^0.14.1",
