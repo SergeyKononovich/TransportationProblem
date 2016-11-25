@@ -1,5 +1,36 @@
 ﻿<div class="page-container">
-    <input id="file" type="file" (change)="fileChanged($event)">
+    <div class="condition-area-container">
+        <mdl-layout-title class="condition-area-title">Импорт</mdl-layout-title>
+
+        <div class="condition-area">
+            <div class="vertex-area-container" mdl-shadow="4">
+                <mdl-layout-title class="vertex-area-title">Excel</mdl-layout-title>
+                <div class="vertex-area">
+                    <div class="add-vertex-area" mdl-shadow="2">
+                        <mdl-textfield class="input-element" type="file" label="Название"
+                                       [(ngModel)]="_newVertex.name"
+                                       floating-label></mdl-textfield>
+                        <mdl-select class="input-selector" [(ngModel)]="_newMachineTask.task" placeholder="Работа">
+                            <mdl-option [value]><em>Отмена</em></mdl-option>
+                            <mdl-option *ngFor="let c of getDataForTaskSelector()" [value]="c.name">{{c.name}}</mdl-option>
+                        </mdl-select>
+                        <mdl-table-selectable class="vertices-table" mdl-shadow="2"
+                                              [table-model]="_excelImportSheetName"
+                                              (table-model-selectionChanged)="verticesTableSelectionChanged($event)"></mdl-table-selectable>
+                        <mdl-textfield class="input-element" type="file" label="Название"
+                                       [(ngModel)]="_newVertex.name"
+                                       floating-label></mdl-textfield>
+                        <button class="add-vertex-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
+                                *ngIf="_isExcelImportButtonVisible"
+                                (click)="importConditionFromExcel()">
+                            Загрузить условие
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="condition-area-container">
         <mdl-layout-title class="condition-area-title">Условие</mdl-layout-title>
 

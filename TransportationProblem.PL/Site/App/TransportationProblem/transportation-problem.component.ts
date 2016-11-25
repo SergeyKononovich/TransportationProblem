@@ -75,7 +75,14 @@ export class TableAnswer implements IMdlTableModelItem {
 })
 export class TransportationProblem {
 
-    private _excelTransportationProblemExport: ExcelTransportationProblemExport = null;
+    //// Import area
+    // Excel area
+    private _isExcelImportButtonVisible: boolean = false;
+    private _excelImportSheetName: string = null;
+    private _excelImportCellName: string = null;
+    private _excelImportSamples: TransportationProblemSample[] = null;
+    private _excelImportSelecetedSample: TransportationProblemSample = null;
+    //// Import area end
 
     //// Condition area
     // Vertecies area
@@ -238,13 +245,32 @@ export class TransportationProblem {
         
         reader.addEventListener("load", (event: any) => {
             let data = event.target.result;
-            this._excelTransportationProblemExport = new ExcelTransportationProblemExport(data);
-            let sheetName = this._excelTransportationProblemExport.GetSheetsNames()[0];
-            let samples = this._excelTransportationProblemExport.GetSamples(sheetName, 'D10');
+            let exporter = new ExcelTransportationProblemExport(data);
+            let sheetName = exporter.GetSheetsNames()[0];
+            let samples = exporter.GetSamples(sheetName, 'D10');
         }, false);
 
         reader.readAsBinaryString(input.target.files[0]);
     }
+
+
+    //// Import area
+    // Excel area
+    private importConditionFromExcel(): void {
+        let reader = new FileReader();
+
+        reader.addEventListener("load", (event: any) => {
+            let data = event.target.result;
+            let exporter = new ExcelTransportationProblemExport(data);
+            let sheetName = exporter.GetSheetsNames()[0];
+            let samples = exporter.GetSamples(sheetName, 'D10');
+        }, false);
+
+        //reader.readAsBinaryString(input.target.files[0]);
+    }
+
+    //// Import area end
+
 
     //// Condition area
     // Vertecies area
@@ -288,7 +314,7 @@ export class TransportationProblem {
     }
     private deleteSelectedVertices(): void {
         // Get all selected vertices
-        let selectedVertecies = this._verticesTableModel.data.filter(value => value.selected);
+        let selectedVertecies = this._verticesTableModel.data.filter((value: TableVertex) => value.selected);
 
         // Get all related arcs
         let relatedArcs = this._arcsTableModel.data.filter((arc: TableArc) => {
@@ -363,7 +389,7 @@ export class TransportationProblem {
         return true;
     }
     private deleteSelectedArcs(): void {
-        let selectedArcs = this._arcsTableModel.data.filter(value => value.selected);
+        let selectedArcs = this._arcsTableModel.data.filter((value:TableArc) => value.selected);
         for (let arc of selectedArcs) {
             Arrays.remove(this._arcsTableModel.data, arc);
         }
@@ -500,7 +526,7 @@ export class TransportationProblem {
                 this._answerGraph.add([{ group: "nodes", data: { id: vert.name }, classes: 'consumers' }]);
         }
 
-        for (let el of this._answerTableModel.data.filter(el => el.selected)) {
+        for (let el of this._answerTableModel.data.filter((el: TableAnswer) => el.selected)) {
             let arc = el as TableAnswer;
             let label = arc.flow + ' (' + arc.price + ')';
             this._answerGraph.add([
