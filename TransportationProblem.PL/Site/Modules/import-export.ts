@@ -3,13 +3,13 @@
 var XLSX = require('xlsx');
 
 
-type CellType = { row: number, column: string };
+type CellType = { r: number, c: number };
 
 
 export class TransportationProblemSample {
     name: string;
-    verts: TableVertex[];
-    arcs: TableArc[];
+    verts: TableVertex[] = [];
+    arcs: TableArc[] = [];
 }
 
 export class ExcelTransportationProblemExport {
@@ -30,29 +30,95 @@ export class ExcelTransportationProblemExport {
 
         let samples: TransportationProblemSample[] = [];
         let worksheet = this._workbook.Sheets[sheetName];
+        
+        try {
+            let sampleCell: CellType = XLSX.utils.decode_cell(startCell);
+            let sampleIndx = 0;
+            while (true) {
+                let sample = new TransportationProblemSample();
+                sampleCell.r += 8 * sampleIndx;
+                let cell = worksheet[XLSX.utils.encode_cell(sampleCell)]
 
-        //if (typeof (this._newVertex.name) === 'undefined')
-        //    throw 
-        let a = XLSX.utils.encode_cell({ c: 1, r: 1 });
+                if (typeof (cell) === 'undefined')
+                    break;
 
-        let sampleNameCell = worksheet[startCell];
-        let startCellColumnRowNames = this.GetRowColumn(startCell);
-        while (typeof (sampleNameCell) !== 'undefined') {
-            let sample = new TransportationProblemSample();
-            sample.name = worksheet[startCell].v;
+                // get samples name
+                sample.name = cell.v;
 
-            let cell: CellType = {
-                row: startCellColumnRowNames.row,
-                column: startCellColumnRowNames.column
-            };
-            
+                // get samples vertices
+                let vertexCell: CellType = {
+                    r: sampleCell.r + 1,
+                    c: sampleCell.c + 1
+                };
+                while (true) {
+                    let vertex = new TableVertex();
+
+                    // get vertex name
+                    vertexCell.c += 1;
+                    let vCell = worksheet[XLSX.utils.encode_cell(vertexCell)]
+                    if (typeof (vCell) === 'undefined' || vCell.t !== 's')
+                        break;
+                    vertex.name = vCell.v;
+                    
+                    // get vertex name
+                    vertexCell.r += 1;
+                    vCell = worksheet[XLSX.utils.encode_cell(vertexCell)]
+                    if (typeof (vCell) === 'undefined' || vCell.t !== 'n')
+                        break;
+                    vertex.power = vCell.v;
+                    
+                    // get vertex priority
+                    vertexCell.r += 1;
+                    vCell = worksheet[XLSX.utils.encode_cell(vertexCell)]
+                    if (typeof (vCell) === 'undefined' || vCell.t !== 's')
+                        break;
+                    vertex.priority = vCell.v === 'есть';
+
+                    vertexCell.r -= 2;
+                    sample.verts.push(vertex);
+                }
+
+                // get samples arcs
+                let arcCell: CellType = {
+                    r: sampleCell.r + 5,
+                    c: sampleCell.c + 1
+                };
+                while (true) {
+                    let arc = new TableArc();
+
+                    // get arc source
+                    arcCell.c += 1;
+                    let aCell = worksheet[XLSX.utils.encode_cell(arcCell)]
+                    if (typeof (aCell) === 'undefined' || aCell.t !== 's')
+                        break;
+                    arc.source = aCell.v;
+
+                    // get arc slink
+                    arcCell.r += 1;
+                    aCell = worksheet[XLSX.utils.encode_cell(arcCell)]
+                    if (typeof (aCell) === 'undefined' || aCell.t !== 's')
+                        break;
+                    arc.slink = aCell.v;
+
+                    // get arc rate
+                    arcCell.r += 1;
+                    aCell = worksheet[XLSX.utils.encode_cell(arcCell)]
+                    if (typeof (aCell) === 'undefined' || aCell.t !== 'n')
+                        break;
+                    arc.rate = aCell.v;
+
+                    arcCell.r -= 2;
+                    sample.arcs.push(arc);
+                }
+
+                // add parsed sample to result
+                sampleIndx += 1;
+                samples.push(sample);
+            }
+        } catch(e) {
+            return samples;
         }
 
         return samples;
-    }
-
-    private GetRowColumn(name: string): CellType {
-        let firstNumber = name.search('[0-9]');
-        return { row: +name.substring(firstNumber), column: name.substring(0, firstNumber) };
     }
 }

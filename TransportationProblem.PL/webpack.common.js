@@ -18,9 +18,7 @@ module.exports = {
     },
 
     node: {
-        fs: 'empty',
-        file: 'empty',
-        directory: 'empty'
+        fs: 'empty'
     },
 
     externals: [

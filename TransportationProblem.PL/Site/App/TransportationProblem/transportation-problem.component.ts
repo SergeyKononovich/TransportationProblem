@@ -240,7 +240,7 @@ export class TransportationProblem {
             let data = event.target.result;
             this._excelTransportationProblemExport = new ExcelTransportationProblemExport(data);
             let sheetName = this._excelTransportationProblemExport.GetSheetsNames()[0];
-            let samples = this._excelTransportationProblemExport.GetSamples(sheetName, 'D9');
+            let samples = this._excelTransportationProblemExport.GetSamples(sheetName, 'D10');
         }, false);
 
         reader.readAsBinaryString(input.target.files[0]);
