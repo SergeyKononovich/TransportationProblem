@@ -6,6 +6,80 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
+    
+    .import-area-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        width: inherit;
+        padding: 20px;
+        background-color: $condition-area-primary-color;
+        .import-area-title {
+            margin-bottom: 10px;
+            color: $condition-area-title-text-color;
+        }
+
+        .import-area {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            .import-excel-area-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: stretch;
+                padding: 10px;
+                margin-bottom: 10px;
+                margin-right: 20px;
+                background-color: $condition-area-accent-color;
+                .import-excel-area-title {
+                    font-size: medium;
+                    margin-bottom: 8px;
+                    color: $condition-area-title-text-color;
+                } 
+                .import-excel-area { 
+                    display: flex;
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                    justify-content: flex-start;
+                    align-items: center;
+                    .file-selector {
+                        display: none;
+                    }
+                    .select-file-button {
+                        margin-left: 10px;
+                        background: $condition-action-button-color;
+                        color: $condition-area-title-text-color;
+                    }
+                    .select-file-button-label {
+                        font-size: medium;
+                        margin-left: 5px;
+                        margin-right: 20px;
+                        color: $condition-area-title-text-color;
+                    }
+                    .input-element {
+                        width: 190px;
+                        margin-left: 10px;
+                        color: $condition-area-title-text-color;
+                    }
+                    .input-selector {
+                        width: 190px;
+                        margin-left: 10px;
+                        color: $condition-area-title-text-color;
+                    }
+                    .import-sample-button {
+                        margin-left: 10px;
+                        background: $condition-action-button-color;
+                        color: $condition-area-title-text-color;
+                    }
+                }
+            }
+        }
+    }
+
     .condition-area-container {
         display: flex;
         flex-direction: column;

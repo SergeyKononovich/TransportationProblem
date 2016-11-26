@@ -77,10 +77,12 @@ export class TransportationProblem {
 
     //// Import area
     // Excel area
-    private _isExcelImportButtonVisible: boolean = false;
-    private _excelImportSheetName: string = null;
-    private _excelImportCellName: string = null;
+    private _excelImportFileName: string = '';
+    private _excelImportFileData: any = null;
+    private _excelImportSheetNames: string[] = null;
     private _excelImportSamples: TransportationProblemSample[] = null;
+    private _excelImportSelectedSheetName: string = null;
+    private _excelImportSelectedCellName: string = null;
     private _excelImportSelecetedSample: TransportationProblemSample = null;
     //// Import area end
 
@@ -237,38 +239,73 @@ export class TransportationProblem {
             maxZoom: 1.5
         });
     }
-
-
-    fileChanged(input: any): void {
-
-        let reader = new FileReader();
-        
-        reader.addEventListener("load", (event: any) => {
-            let data = event.target.result;
-            let exporter = new ExcelTransportationProblemExport(data);
-            let sheetName = exporter.GetSheetsNames()[0];
-            let samples = exporter.GetSamples(sheetName, 'D10');
-        }, false);
-
-        reader.readAsBinaryString(input.target.files[0]);
-    }
-
-
+    
     //// Import area
     // Excel area
-    private importConditionFromExcel(): void {
+    private excelImportFileChanged(input: any): void {
+
+        if (input.target.files.length === 0) {
+            this._excelImportSheetNames = null;
+            this._excelImportSelectedSheetName = null;
+            this._excelImportSelectedCellName = null;
+            this._excelImportSelecetedSample = null;
+            this._excelImportFileData = null;
+            this._excelImportFileName = '';
+            return;
+        }
+
         let reader = new FileReader();
 
         reader.addEventListener("load", (event: any) => {
             let data = event.target.result;
-            let exporter = new ExcelTransportationProblemExport(data);
-            let sheetName = exporter.GetSheetsNames()[0];
-            let samples = exporter.GetSamples(sheetName, 'D10');
+            try {
+                let exporter = new ExcelTransportationProblemExport(data);
+                this._excelImportSheetNames = exporter.GetSheetsNames();
+                this._excelImportSelectedSheetName = null;
+                this._excelImportSelectedCellName = null;
+                this._excelImportSelecetedSample = null;
+                this._excelImportFileData = data;
+            } catch (e) {
+                this._dialogService.alert("Неверный формат выбранного файла!", "Ок", "Ошибка");
+            }
         }, false);
 
-        //reader.readAsBinaryString(input.target.files[0]);
+        this._excelImportFileName = input.target.files[0].name;
+        reader.readAsBinaryString(input.target.files[0]);
     }
+    private excelImportClearSelectedCellName(): void {
 
+        this._excelImportSelectedCellName = null;
+        this._excelImportSelecetedSample = null;
+    }
+    private excelImportSamples(): void {
+
+        this._excelImportSelecetedSample = null;
+
+        let exporter = new ExcelTransportationProblemExport(this._excelImportFileData);
+        this._excelImportSamples = exporter.GetSamples(this._excelImportSelectedSheetName, this._excelImportSelectedCellName);
+    }
+    private importConditionFromExcel(): void {
+
+        this._verticesTableModel.data = [];
+        this._arcsTableModel.data = [];
+
+        for (let newVert of this._excelImportSelecetedSample.verts) {
+            if (!this.validateVertex(newVert, false))
+                this._dialogService.alert("Тест содержит неверное условие!", "Ок", "Ошибка");
+            else
+                this._verticesTableModel.data.push(newVert.copy());
+        }
+
+        for (let newArc of this._excelImportSelecetedSample.arcs) {
+            if (!this.validateArc(newArc, false))
+                this._dialogService.alert("Тест содержит неверное условие!", "Ок", "Ошибка");
+            else
+                this._arcsTableModel.data.push(newArc.copy());
+        }
+
+        this.renderConditionGraph();
+    }
     //// Import area end
 
 
@@ -289,24 +326,32 @@ export class TransportationProblem {
     }
     private validateNewVertex(): boolean {
 
-        if (typeof (this._newVertex.name) === 'undefined' || this._newVertex.name.trim() === '') {
-            this._dialogService.alert("Название узла не может быть пустым!", "Ок", "Ошибка");
+        return this.validateVertex(this._newVertex, true);
+    }
+    private validateVertex(vertex: TableVertex, withAlert: boolean): boolean {
+        
+        if (typeof (vertex.name) === 'undefined' || new String(vertex.name).trim() === '') {
+            if (withAlert)
+                this._dialogService.alert("Название узла не может быть пустым!", "Ок", "Ошибка");
             return false;
         }
 
-        if (this._verticesTableModel.data.some((value: TableVertex) => value.name === this._newVertex.name)) {
-            this._dialogService.alert("Узел с таким названием уже существует!", "Ок", "Ошибка");
+        if (this._verticesTableModel.data.some((value: TableVertex) => value.name === vertex.name)) {
+            if (withAlert)
+                this._dialogService.alert("Узел с таким названием уже существует!", "Ок", "Ошибка");
+            return false;
+        }
+        
+        if (new String(vertex.power) === '') {
+            if (withAlert)
+                this._dialogService.alert("Не задано поле 'мощность' узла!", "Ок", "Ошибка");
             return false;
         }
 
-        if (this._newVertex.power.trim() === '') {
-            this._dialogService.alert("Не задано поле 'мощность' узла!", "Ок", "Ошибка");
-            return false;
-        }
-
-        let power: number = +this._newVertex.power;
+        let power: number = +vertex.power;
         if (isNaN(power) || power === 0) {
-            this._dialogService.alert("Поле 'мощность' должно быть числом!", "Ок", "Ошибка");
+            if (withAlert)
+                this._dialogService.alert("Поле 'мощность' должно быть числом!", "Ок", "Ошибка");
             return false;
         }
 
@@ -365,24 +410,32 @@ export class TransportationProblem {
     }
     private validateNewArc(): boolean {
 
-        if (typeof (this._newArc.source) === 'undefined' || this._newArc.source === '') {
-            this._dialogService.alert("Отправитель не указан!", "Ок", "Ошибка");
+        return this.validateArc(this._newArc, true);
+    }
+    private validateArc(arc: TableArc, withAlert: boolean): boolean {
+
+        if (typeof (arc.source) === 'undefined' || arc.source === '') {
+            if (withAlert)
+                this._dialogService.alert("Отправитель не указан!", "Ок", "Ошибка");
             return false;
         }
 
-        if (typeof (this._newArc.slink) === 'undefined' || this._newArc.slink === '') {
-            this._dialogService.alert("Получатель не указан!", "Ок", "Ошибка");
+        if (typeof (arc.slink) === 'undefined' || arc.slink === '') {
+            if (withAlert)
+                this._dialogService.alert("Получатель не указан!", "Ок", "Ошибка");
+            return false;
+        }
+        
+        if (typeof (arc.rate) === 'undefined' || new String(arc.rate).trim() === '') {
+            if (withAlert)
+                this._dialogService.alert("Не задано поле 'ставка'!", "Ок", "Ошибка");
             return false;
         }
 
-        if (typeof (this._newArc.rate) === 'undefined' || this._newArc.rate.trim() === '') {
-            this._dialogService.alert("Не задано поле 'ставка'!", "Ок", "Ошибка");
-            return false;
-        }
-
-        let rate: number = +this._newArc.rate;
+        let rate: number = +arc.rate;
         if (isNaN(rate) || rate === 0) {
-            this._dialogService.alert("Поле 'тариф' должно быть числом отличным от 0!", "Ок", "Ошибка");
+            if (withAlert)
+                this._dialogService.alert("Поле 'тариф' должно быть числом отличным от 0!", "Ок", "Ошибка");
             return false;
         }
 
@@ -406,6 +459,9 @@ export class TransportationProblem {
             .data.some((value: IMdlTableModelItem) => value.selected);
     }
     private getDataForArcSlinkSelector(): IMdlTableModelItem[] {
+        if (this._newArc.source === '' || typeof (this._newArc.source) === 'undefined')
+            return [];
+
         return this._verticesTableModel.data.filter((vert: TableVertex) =>
             vert.name !== this._newArc.source &&
             !this._arcsTableModel.data.some((arc: TableArc) => arc.source === this._newArc.source && arc.slink === vert.name));
@@ -537,14 +593,14 @@ export class TransportationProblem {
         this._answerGraph.layout({
             name: 'cose-bilkent',
             padding: 100,
-            idealEdgeLength: 130
+            idealEdgeLength: 70
         });
     }
     private restructAnswerGraph(): void {
         this._answerGraph.layout({
             name: 'cose-bilkent',
             padding: 100,
-            idealEdgeLength: 130
+            idealEdgeLength: 70
         });
     }
     //// Answer area end

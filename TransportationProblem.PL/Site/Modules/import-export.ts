@@ -60,7 +60,7 @@ export class ExcelTransportationProblemExport {
                         break;
                     vertex.name = vCell.v;
                     
-                    // get vertex name
+                    // get vertex power
                     vertexCell.r += 1;
                     vCell = worksheet[XLSX.utils.encode_cell(vertexCell)]
                     if (typeof (vCell) === 'undefined' || vCell.t !== 'n')
@@ -113,7 +113,8 @@ export class ExcelTransportationProblemExport {
 
                 // add parsed sample to result
                 sampleIndx += 1;
-                samples.push(sample);
+                if (sample.verts.length > 0)
+                    samples.push(sample);
             }
         } catch(e) {
             return samples;

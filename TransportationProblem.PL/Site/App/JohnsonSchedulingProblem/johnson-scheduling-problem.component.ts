@@ -271,6 +271,9 @@ export class JohnsonSchedulingProblem {
             .data.some((value: IMdlTableModelItem) => value.selected);
     }
     private getDataForTaskSelector(): IMdlTableModelItem[] {
+        if (this._newMachineTask.machine === '' || typeof (this._newMachineTask.machine) === 'undefined')
+            return [];
+
         return this._tasksTableModel.data.filter((task: TableTask) =>
             !this._machineTasksTableModel.data.some((mt: TableMachineTask) =>
                 mt.machine === this._newMachineTask.machine && mt.task === task.name));

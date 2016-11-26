@@ -1,31 +1,42 @@
 ﻿<div class="page-container">
-    <div class="condition-area-container">
-        <mdl-layout-title class="condition-area-title">Импорт</mdl-layout-title>
+    <div class="import-area-container">
+        <mdl-layout-title class="import-area-title">Импорт</mdl-layout-title>
 
-        <div class="condition-area">
-            <div class="vertex-area-container" mdl-shadow="4">
-                <mdl-layout-title class="vertex-area-title">Excel</mdl-layout-title>
-                <div class="vertex-area">
-                    <div class="add-vertex-area" mdl-shadow="2">
-                        <mdl-textfield class="input-element" type="file" label="Название"
-                                       [(ngModel)]="_newVertex.name"
-                                       floating-label></mdl-textfield>
-                        <mdl-select class="input-selector" [(ngModel)]="_newMachineTask.task" placeholder="Работа">
-                            <mdl-option [value]><em>Отмена</em></mdl-option>
-                            <mdl-option *ngFor="let c of getDataForTaskSelector()" [value]="c.name">{{c.name}}</mdl-option>
-                        </mdl-select>
-                        <mdl-table-selectable class="vertices-table" mdl-shadow="2"
-                                              [table-model]="_excelImportSheetName"
-                                              (table-model-selectionChanged)="verticesTableSelectionChanged($event)"></mdl-table-selectable>
-                        <mdl-textfield class="input-element" type="file" label="Название"
-                                       [(ngModel)]="_newVertex.name"
-                                       floating-label></mdl-textfield>
-                        <button class="add-vertex-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
-                                *ngIf="_isExcelImportButtonVisible"
-                                (click)="importConditionFromExcel()">
-                            Загрузить условие
-                        </button>
-                    </div>
+        <div class="import-area">
+            <div class="import-excel-area-container" mdl-shadow="4">
+                <mdl-layout-title class="import-excel-area-title">Excel</mdl-layout-title>
+                <div class="import-excel-area">
+                    <input #excelFileSelector class="file-selector" type="file" (change)="excelImportFileChanged($event)">
+                    <button class="select-file-button" mdl-button mdl-button-type="raised" mdl-colored="primary" 
+                            (click)="excelFileSelector.click()">Выбрать файл</button>
+                    <mdl-layout-title class="select-file-button-label" *ngIf="_excelImportFileName">
+                        - {{_excelImportFileName}}
+                    </mdl-layout-title>
+                    <mdl-select class="input-selector" 
+                                *ngIf="_excelImportSheetNames"
+                                (change)="excelImportClearSelectedCellName()"
+                                [(ngModel)]="_excelImportSelectedSheetName" 
+                                placeholder="Страница">
+                        <mdl-option [value]><em>Отмена</em></mdl-option>
+                        <mdl-option *ngFor="let c of _excelImportSheetNames" [value]="c">{{c}}</mdl-option>
+                    </mdl-select>
+                    <mdl-textfield class="input-element" type="text" label="Начальная ячейка"
+                                *ngIf="_excelImportSelectedSheetName"
+                                (change)="excelImportSamples()"
+                                [(ngModel)]="_excelImportSelectedCellName"
+                                floating-label></mdl-textfield>
+                    <mdl-select class="input-selector"
+                                *ngIf="_excelImportSelectedCellName"
+                                [(ngModel)]="_excelImportSelecetedSample"
+                                placeholder="Страница">
+                        <mdl-option [value]><em>Отмена</em></mdl-option>
+                        <mdl-option *ngFor="let c of _excelImportSamples" [value]="c">{{c.name}}</mdl-option>
+                    </mdl-select>
+                    <button class="import-sample-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
+                            *ngIf="_excelImportSelectedCellName"
+                            (click)="importConditionFromExcel()">
+                        Загрузить условие
+                    </button>
                 </div>
             </div>
         </div>
@@ -100,9 +111,9 @@
                 <mdl-layout-title class="graph-area-title">Граф связей</mdl-layout-title>
                 <div class="graph-area">
                     <div class="graph-labels">
-                        <div class="graph-label"><div class="provider-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - поставщики (мощность)</mdl-layout-title></div>
-                        <div class="graph-label"><div class="consumers-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - потребители (мощность)</mdl-layout-title></div>
-                        <div class="graph-label"><div class="rate-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - тарифы</mdl-layout-title></div>
+                        <div class="graph-label"><div class="provider-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - поставщик (мощность)</mdl-layout-title></div>
+                        <div class="graph-label"><div class="consumers-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - потребитель (мощность)</mdl-layout-title></div>
+                        <div class="graph-label"><div class="rate-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - тариф</mdl-layout-title></div>
                     </div>
                     <div class="graph-canvas" id="conditionGraphCanvas" #conditionGraphCanvas></div>
                 </div>
@@ -137,8 +148,8 @@
                 <mdl-layout-title class="graph-area-title">Граф поставок</mdl-layout-title>
                 <div class="graph-area">
                     <div class="graph-labels">
-                        <div class="graph-label"><div class="provider-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - поставщики</mdl-layout-title></div>
-                        <div class="graph-label"><div class="consumers-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - потребители</mdl-layout-title></div>
+                        <div class="graph-label"><div class="provider-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - поставщик</mdl-layout-title></div>
+                        <div class="graph-label"><div class="consumers-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - потребитель</mdl-layout-title></div>
                         <div class="graph-label"><div class="flow-color" mdl-shadow="4"></div><mdl-layout-title class="label-title"> - поток (стоимость)</mdl-layout-title></div>
                     </div>
                     <div class="graph-canvas" id="answerGraphCanvas" #answerGraphCanvas></div>
