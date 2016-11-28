@@ -34,9 +34,10 @@ export class ExcelTransportationProblemExport {
         try {
             let sampleCell: CellType = XLSX.utils.decode_cell(startCell);
             let sampleIndx = 0;
+            sampleCell.r -= 8;
             while (true) {
                 let sample = new TransportationProblemSample();
-                sampleCell.r += 8 * sampleIndx;
+                sampleCell.r += 8;
                 let cell = worksheet[XLSX.utils.encode_cell(sampleCell)]
 
                 if (typeof (cell) === 'undefined')

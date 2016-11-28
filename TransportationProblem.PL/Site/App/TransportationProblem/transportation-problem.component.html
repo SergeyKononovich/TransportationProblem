@@ -1,6 +1,6 @@
 ﻿<div class="page-container">
     <div class="import-area-container">
-        <mdl-layout-title class="import-area-title">Импорт</mdl-layout-title>
+        <mdl-layout-title class="import-area-title">Импорт условия</mdl-layout-title>
 
         <div class="import-area">
             <div class="import-excel-area-container" mdl-shadow="4">
@@ -27,13 +27,13 @@
                                 floating-label></mdl-textfield>
                     <mdl-select class="input-selector"
                                 *ngIf="_excelImportSelectedCellName"
-                                [(ngModel)]="_excelImportSelecetedSample"
+                                [(ngModel)]="_excelImportSelecetedSampleName"
                                 placeholder="Страница">
-                        <mdl-option [value]><em>Отмена</em></mdl-option>
-                        <mdl-option *ngFor="let c of _excelImportSamples" [value]="c">{{c.name}}</mdl-option>
+                        <mdl-option [value]="null"><em>Отмена</em></mdl-option>
+                        <mdl-option *ngFor="let c of _excelImportSamples" [value]="c.name">{{c.name}}</mdl-option>
                     </mdl-select>
                     <button class="import-sample-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
-                            *ngIf="_excelImportSelectedCellName"
+                            *ngIf="_excelImportSelecetedSampleName"
                             (click)="importConditionFromExcel()">
                         Загрузить условие
                     </button>

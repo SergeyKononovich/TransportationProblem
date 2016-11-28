@@ -1,6 +1,6 @@
 ﻿import { Component, ElementRef, ViewChild }    from '@angular/core';
 import { MdlDefaultTableModel, MdlDialogService, IMdlTableModelItem } from 'angular2-mdl';
-import { Dictionary }           from 'typescript-collections/dist/lib';
+import { Dictionary, Set }           from 'typescript-collections/dist/lib';
 import * as Arrays              from 'typescript-collections/dist/lib/arrays';
 
 var Cytoscape = require('cytoscape');
@@ -83,7 +83,7 @@ export class TransportationProblem {
     private _excelImportSamples: TransportationProblemSample[] = null;
     private _excelImportSelectedSheetName: string = null;
     private _excelImportSelectedCellName: string = null;
-    private _excelImportSelecetedSample: TransportationProblemSample = null;
+    private _excelImportSelecetedSampleName: string = null;
     //// Import area end
 
     //// Condition area
@@ -248,7 +248,7 @@ export class TransportationProblem {
             this._excelImportSheetNames = null;
             this._excelImportSelectedSheetName = null;
             this._excelImportSelectedCellName = null;
-            this._excelImportSelecetedSample = null;
+            this._excelImportSelecetedSampleName = null;
             this._excelImportFileData = null;
             this._excelImportFileName = '';
             return;
@@ -263,7 +263,7 @@ export class TransportationProblem {
                 this._excelImportSheetNames = exporter.GetSheetsNames();
                 this._excelImportSelectedSheetName = null;
                 this._excelImportSelectedCellName = null;
-                this._excelImportSelecetedSample = null;
+                this._excelImportSelecetedSampleName = null;
                 this._excelImportFileData = data;
             } catch (e) {
                 this._dialogService.alert("Неверный формат выбранного файла!", "Ок", "Ошибка");
@@ -276,11 +276,11 @@ export class TransportationProblem {
     private excelImportClearSelectedCellName(): void {
 
         this._excelImportSelectedCellName = null;
-        this._excelImportSelecetedSample = null;
+        this._excelImportSelecetedSampleName = null;
     }
     private excelImportSamples(): void {
 
-        this._excelImportSelecetedSample = null;
+        this._excelImportSelecetedSampleName = null;
 
         let exporter = new ExcelTransportationProblemExport(this._excelImportFileData);
         this._excelImportSamples = exporter.GetSamples(this._excelImportSelectedSheetName, this._excelImportSelectedCellName);
@@ -290,14 +290,15 @@ export class TransportationProblem {
         this._verticesTableModel.data = [];
         this._arcsTableModel.data = [];
 
-        for (let newVert of this._excelImportSelecetedSample.verts) {
+        let selectedSample = this._excelImportSamples.find(s => s.name === this._excelImportSelecetedSampleName)
+        for (let newVert of selectedSample.verts) {
             if (!this.validateVertex(newVert, false))
                 this._dialogService.alert("Тест содержит неверное условие!", "Ок", "Ошибка");
             else
                 this._verticesTableModel.data.push(newVert.copy());
         }
 
-        for (let newArc of this._excelImportSelecetedSample.arcs) {
+        for (let newArc of selectedSample.arcs) {
             if (!this.validateArc(newArc, false))
                 this._dialogService.alert("Тест содержит неверное условие!", "Ок", "Ошибка");
             else
@@ -573,8 +574,14 @@ export class TransportationProblem {
     private renderAnswerGraph(): void {
 
         this._answerGraph.remove(this._answerGraph.elements("*"));
-
-        for (let el of this._verticesTableModel.data) {
+        
+        let visibleVerices = new Set<string>();
+        this._answerTableModel.data.forEach((el: TableAnswer) => {
+            if (!el.selected) return;
+            visibleVerices.add(el.source);
+            visibleVerices.add(el.slink);
+        });
+        for (let el of this._verticesTableModel.data.filter((el: TableVertex) => visibleVerices.contains(el.name))) {
             let vert = el as TableVertex;
             if (+vert.power > 0)
                 this._answerGraph.add([{ group: "nodes", data: { id: vert.name }, classes: 'provider' }]);
