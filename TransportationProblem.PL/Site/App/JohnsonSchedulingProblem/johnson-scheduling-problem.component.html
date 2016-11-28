@@ -1,4 +1,49 @@
 ﻿<div class="page-container">
+    <div class="import-area-container">
+        <mdl-layout-title class="import-area-title">Импорт условия</mdl-layout-title>
+
+        <div class="import-area">
+            <div class="import-excel-area-container" mdl-shadow="4">
+                <mdl-layout-title class="import-excel-area-title">Excel</mdl-layout-title>
+                <div class="import-excel-area">
+                    <input #excelFileSelector class="file-selector" type="file" (change)="excelImportFileChanged($event)">
+                    <button class="select-file-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
+                            (click)="excelFileSelector.click()">
+                        Выбрать файл
+                    </button>
+                    <mdl-layout-title class="select-file-button-label" *ngIf="_excelImportFileName">
+                        - {{_excelImportFileName}}
+                    </mdl-layout-title>
+                    <mdl-select class="input-selector"
+                                *ngIf="_excelImportSheetNames"
+                                (change)="excelImportClearSelectedCellName()"
+                                [(ngModel)]="_excelImportSelectedSheetName"
+                                placeholder="Страница">
+                        <mdl-option [value]><em>Отмена</em></mdl-option>
+                        <mdl-option *ngFor="let c of _excelImportSheetNames" [value]="c">{{c}}</mdl-option>
+                    </mdl-select>
+                    <mdl-textfield class="input-element" type="text" label="Начальная ячейка"
+                                   *ngIf="_excelImportSelectedSheetName"
+                                   (change)="excelImportSamples()"
+                                   [(ngModel)]="_excelImportSelectedCellName"
+                                   floating-label></mdl-textfield>
+                    <mdl-select class="input-selector"
+                                *ngIf="_excelImportSelectedCellName"
+                                [(ngModel)]="_excelImportSelecetedSampleName"
+                                placeholder="Страница">
+                        <mdl-option [value]="null"><em>Отмена</em></mdl-option>
+                        <mdl-option *ngFor="let c of _excelImportSamples" [value]="c.name">{{c.name}}</mdl-option>
+                    </mdl-select>
+                    <button class="import-sample-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
+                            *ngIf="_excelImportSelecetedSampleName"
+                            (click)="importConditionFromExcel()">
+                        Загрузить условие
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="condition-area-container">
         <mdl-layout-title class="condition-area-title">Условие</mdl-layout-title>
 

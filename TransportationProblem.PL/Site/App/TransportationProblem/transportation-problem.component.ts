@@ -74,7 +74,6 @@ export class TableAnswer implements IMdlTableModelItem {
     styleUrls: ['./transportation-problem.component.scss']
 })
 export class TransportationProblem {
-
     //// Import area
     // Excel area
     private _excelImportFileName: string = '';

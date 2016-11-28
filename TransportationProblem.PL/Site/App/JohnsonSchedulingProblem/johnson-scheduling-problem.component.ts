@@ -4,9 +4,10 @@ import { Dictionary }                   from 'typescript-collections/dist/lib';
 import * as Arrays                      from 'typescript-collections/dist/lib/arrays';
 
 import { JohnsonTask, Machine, Task, Solution }   from '../../Modules/johnson-scheduling-problem';
+import { ExcelJohnsonSchedulingProblemExport, JohnsonSchedulingProblemSample } from '../../Modules/import-export';
 
 
-class TableMachine implements IMdlTableModelItem {
+export class TableMachine implements IMdlTableModelItem {
     public name: string = '';
     public selected: boolean = false;
 
@@ -19,7 +20,7 @@ class TableMachine implements IMdlTableModelItem {
     }
 }
 
-class TableTask implements IMdlTableModelItem {
+export class TableTask implements IMdlTableModelItem {
     public name: string = '';
     public selected: boolean = false;
 
@@ -32,7 +33,7 @@ class TableTask implements IMdlTableModelItem {
     }
 }
 
-class TableMachineTask implements IMdlTableModelItem {
+export class TableMachineTask implements IMdlTableModelItem {
     public machine: string = '';
     public task: string = '';
     public time: string = '';
@@ -54,7 +55,18 @@ class TableMachineTask implements IMdlTableModelItem {
     templateUrl: './johnson-scheduling-problem.component.html',
     styleUrls: ['./johnson-scheduling-problem.component.scss']
 })
-export class JohnsonSchedulingProblem {    
+export class JohnsonSchedulingProblem {  
+    //// Import area
+    // Excel area
+    private _excelImportFileName: string = '';
+    private _excelImportFileData: any = null;
+    private _excelImportSheetNames: string[] = null;
+    private _excelImportSamples: JohnsonSchedulingProblemSample[] = null;
+    private _excelImportSelectedSheetName: string = null;
+    private _excelImportSelectedCellName: string = null;
+    private _excelImportSelecetedSampleName: string = null;
+    //// Import area end
+
     //// Condition area
     // Machine area
     private _newMachine = new TableMachine();
@@ -91,6 +103,77 @@ export class JohnsonSchedulingProblem {
     } 
 
 
+
+    //// Import area
+    // Excel area
+    private excelImportFileChanged(input: any): void {
+
+        if (input.target.files.length === 0) {
+            this._excelImportSheetNames = null;
+            this._excelImportSelectedSheetName = null;
+            this._excelImportSelectedCellName = null;
+            this._excelImportSelecetedSampleName = null;
+            this._excelImportFileData = null;
+            this._excelImportFileName = '';
+            return;
+        }
+
+        let reader = new FileReader();
+
+        reader.addEventListener("load", (event: any) => {
+            let data = event.target.result;
+            try {
+                let exporter = new ExcelJohnsonSchedulingProblemExport(data);
+                this._excelImportSheetNames = exporter.GetSheetsNames();
+                this._excelImportSelectedSheetName = null;
+                this._excelImportSelectedCellName = null;
+                this._excelImportSelecetedSampleName = null;
+                this._excelImportFileData = data;
+            } catch (e) {
+                this._dialogService.alert("Неверный формат выбранного файла!", "Ок", "Ошибка");
+            }
+        }, false);
+
+        this._excelImportFileName = input.target.files[0].name;
+        reader.readAsBinaryString(input.target.files[0]);
+    }
+    private excelImportClearSelectedCellName(): void {
+
+        this._excelImportSelectedCellName = null;
+        this._excelImportSelecetedSampleName = null;
+    }
+    private excelImportSamples(): void {
+
+        this._excelImportSelecetedSampleName = null;
+
+        let exporter = new ExcelJohnsonSchedulingProblemExport(this._excelImportFileData);
+        this._excelImportSamples = exporter.GetSamples(this._excelImportSelectedSheetName, this._excelImportSelectedCellName);
+    }
+    private importConditionFromExcel(): void {
+
+        this._verticesTableModel.data = [];
+        this._arcsTableModel.data = [];
+
+        let selectedSample = this._excelImportSamples.find(s => s.name === this._excelImportSelecetedSampleName)
+        for (let newVert of selectedSample.verts) {
+            if (!this.validateVertex(newVert, false))
+                this._dialogService.alert("Тест содержит неверное условие!", "Ок", "Ошибка");
+            else
+                this._verticesTableModel.data.push(newVert.copy());
+        }
+
+        for (let newArc of selectedSample.arcs) {
+            if (!this.validateArc(newArc, false))
+                this._dialogService.alert("Тест содержит неверное условие!", "Ок", "Ошибка");
+            else
+                this._arcsTableModel.data.push(newArc.copy());
+        }
+
+        this.renderConditionGraph();
+    }
+
+
+    //// Import area end
     //// Condition area
     // Machines area
     private emptyNewMachine(): void {
@@ -121,7 +204,7 @@ export class JohnsonSchedulingProblem {
     }
     private deleteSelectedMachines(): void {
         // Get all selected machines
-        let selectedMachines = this._machinesTableModel.data.filter(value => value.selected);
+        let selectedMachines = this._machinesTableModel.data.filter((value: TableMachine) => value.selected);
         
         // Get all related processes
         let relatedProc = this._machineTasksTableModel.data.filter((proc: TableMachineTask) => {
@@ -180,7 +263,7 @@ export class JohnsonSchedulingProblem {
     }
     private deleteSelectedTasks(): void {
         // Get all selected tasks
-        let selectedTasks = this._tasksTableModel.data.filter(value => value.selected);
+        let selectedTasks = this._tasksTableModel.data.filter((value: TableTask) => value.selected);
         
         // Get all related processes
         let relatedProc = this._machineTasksTableModel.data.filter((proc: TableMachineTask) => {
@@ -253,7 +336,7 @@ export class JohnsonSchedulingProblem {
     }
     private deleteSelectedMachineTasks(): void {
         // Get all selected machines
-        let selectedMachineTasks = this._machineTasksTableModel.data.filter(value => value.selected);
+        let selectedMachineTasks = this._machineTasksTableModel.data.filter((value: TableTask) => value.selected);
 
         // Delete selected machines
         for (let machineTask of selectedMachineTasks)
@@ -305,7 +388,7 @@ export class JohnsonSchedulingProblem {
             let tasks = new Dictionary<string, Task>();
             this._tasksTableModel.data.forEach((task: TableTask) => {
                 let t = new Task(task.name);
-                machines.forEach((key, machine) => {
+                machines.forEach((key: string, machine: Machine) => {
                     let machineTask = this._machineTasksTableModel.data.find((mt: TableMachineTask) => {
                         return mt.machine === key && mt.task === task.name;
                     });
@@ -336,7 +419,7 @@ export class JohnsonSchedulingProblem {
             let tasks = new Dictionary<string, Task>();
             this._tasksTableModel.data.forEach((task: TableTask) => {
                 let t = new Task(task.name);
-                machines.forEach((key, machine) => {
+                machines.forEach((key: string, machine: Machine) => {
                     let machineTask = this._machineTasksTableModel.data.find((mt: TableMachineTask) => {
                         return mt.machine === key && mt.task === task.name;
                     });
