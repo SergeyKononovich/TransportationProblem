@@ -151,25 +151,37 @@ export class JohnsonSchedulingProblem {
     }
     private importConditionFromExcel(): void {
 
-        this._verticesTableModel.data = [];
-        this._arcsTableModel.data = [];
+        this._machinesTableModel.data = [];
+        this._tasksTableModel.data = [];
+        this._machineTasksTableModel.data = [];
 
         let selectedSample = this._excelImportSamples.find(s => s.name === this._excelImportSelecetedSampleName)
-        for (let newVert of selectedSample.verts) {
-            if (!this.validateVertex(newVert, false))
+        for (let newMachine of selectedSample.machines) {
+            if (!this.validateMachine(newMachine, false)) {
                 this._dialogService.alert("Тест содержит неверное условие!", "Ок", "Ошибка");
-            else
-                this._verticesTableModel.data.push(newVert.copy());
+                return;
+            } else
+                this._machinesTableModel.data.push(newMachine.copy());
         }
 
-        for (let newArc of selectedSample.arcs) {
-            if (!this.validateArc(newArc, false))
+        for (let newTask of selectedSample.tasks) {
+            if (!this.validateTask(newTask, false)) {
                 this._dialogService.alert("Тест содержит неверное условие!", "Ок", "Ошибка");
-            else
-                this._arcsTableModel.data.push(newArc.copy());
+                this._machinesTableModel.data = [];
+                return;
+            } else
+                this._tasksTableModel.data.push(newTask.copy());
         }
 
-        this.renderConditionGraph();
+        for (let newMachineTask of selectedSample.machinesTasks) {
+            if (!this.validateMachineTask(newMachineTask, false)) {
+                this._dialogService.alert("Тест содержит неверное условие!", "Ок", "Ошибка");
+                this._machinesTableModel.data = [];
+                this._tasksTableModel.data = [];
+                return;
+            } else
+                this._machineTasksTableModel.data.push(newMachineTask.copy());
+        }
     }
 
 
@@ -190,13 +202,19 @@ export class JohnsonSchedulingProblem {
         this._answer = null;
     }
     private validateNewMachine(): boolean {
-        if (this._newMachine.name.trim() === '') {
-            this._dialogService.alert("Название исполнителя не может быть пустым!", "Ок", "Ошибка");
+        return this.validateMachine(this._newMachine, true);
+    }
+    private validateMachine(machine: TableMachine, withAlert: boolean): boolean {
+        
+        if (new String(machine.name).trim() === '') {
+            if (withAlert)
+                this._dialogService.alert("Название исполнителя не может быть пустым!", "Ок", "Ошибка");
             return false;
         }
 
-        if (this._machinesTableModel.data.some((value: TableMachine) => value.name === this._newMachine.name)) {
-            this._dialogService.alert("Исполнитель с таким названием уже существует!", "Ок", "Ошибка");
+        if (this._machinesTableModel.data.some((value: TableMachine) => value.name === machine.name)) {
+            if (withAlert)
+                this._dialogService.alert("Исполнитель с таким названием уже существует!", "Ок", "Ошибка");
             return false;
         }
 
@@ -249,13 +267,18 @@ export class JohnsonSchedulingProblem {
         this._answer = null;
     }
     private validateNewTask(): boolean {
-        if (this._newTask.name.trim() === '') {
-            this._dialogService.alert("Название работы не может быть пустым!", "Ок", "Ошибка");
+        return this.validateTask(this._newTask, true);
+    }
+    private validateTask(task: TableTask, withAlert: boolean): boolean {
+        if (new String(task.name).trim() === '') {
+            if (withAlert)
+                this._dialogService.alert("Название работы не может быть пустым!", "Ок", "Ошибка");
             return false;
         }
 
-        if (this._tasksTableModel.data.some((value: TableTask) => value.name === this._newTask.name)) {
-            this._dialogService.alert("Работа с таким названием уже существует!", "Ок", "Ошибка");
+        if (this._tasksTableModel.data.some((value: TableTask) => value.name === task.name)) {
+            if (withAlert)
+                this._dialogService.alert("Работа с таким названием уже существует!", "Ок", "Ошибка");
             return false;
         }
 
@@ -311,24 +334,31 @@ export class JohnsonSchedulingProblem {
         this._answer = null;
     }
     private validateNewMachineTask(): boolean {
-        if (typeof (this._newMachineTask.machine) === 'undefined' || this._newMachineTask.machine === '') {
-            this._dialogService.alert("Исполнитель не указан!", "Ок", "Ошибка");
+        return this.validateMachineTask(this._newMachineTask, true);
+    }
+    private validateMachineTask(machineTask: TableMachineTask, withAlert: boolean): boolean {
+        if (typeof (machineTask.machine) === 'undefined' || machineTask.machine === '') {
+            if (withAlert)
+                this._dialogService.alert("Исполнитель не указан!", "Ок", "Ошибка");
             return false;
         }
 
-        if (typeof (this._newMachineTask.task) === 'undefined' || this._newMachineTask.task === '') {
-            this._dialogService.alert("Работа не указана!", "Ок", "Ошибка");
+        if (typeof (machineTask.task) === 'undefined' || machineTask.task === '') {
+            if (withAlert)
+                this._dialogService.alert("Работа не указана!", "Ок", "Ошибка");
             return false;
         }
 
-        if (typeof (this._newMachineTask.time) === 'undefined' || this._newMachineTask.time.trim() === '') {
-            this._dialogService.alert("Не задано время выполнения!", "Ок", "Ошибка");
+        if (typeof (machineTask.time) === 'undefined' || new String(machineTask.time).trim() === '') {
+            if (withAlert)
+                this._dialogService.alert("Не задано время выполнения!", "Ок", "Ошибка");
             return false;
         }
 
-        let time: number = +this._newMachineTask.time;
+        let time: number = +machineTask.time;
         if (isNaN(time) || time <= 0) {
-            this._dialogService.alert("Поле 'время' должно быть положительным числом отличным от 0!", "Ок", "Ошибка");
+            if (withAlert)
+                this._dialogService.alert("Поле 'время' должно быть положительным числом отличным от 0!", "Ок", "Ошибка");
             return false;
         }
 
@@ -402,7 +432,7 @@ export class JohnsonSchedulingProblem {
             });
 
             this._answer = this._taskSolver.SolveStupid(tasks.values(), machines.values());
-            this._dialogService.alert("Решение получено!", "Ок", "Успех");
+            this._dialogService.alert("Расписание построено!", "Ок", "Решение получено");
         }
         catch (error) {
             this._dialogService.alert(error, "Ок", "Ошибка");
@@ -433,7 +463,7 @@ export class JohnsonSchedulingProblem {
             });
 
             this._answer = this._taskSolver.SolveHeuristic(tasks.values(), machines.values());
-            this._dialogService.alert("Решение получено!", "Ок", "Успех");
+            this._dialogService.alert("Расписание построено!", "Ок", "Решение получено");
         }
         catch (error) {
             this._dialogService.alert(error, "Ок", "Ошибка");

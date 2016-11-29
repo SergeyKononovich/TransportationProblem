@@ -291,16 +291,19 @@ export class TransportationProblem {
 
         let selectedSample = this._excelImportSamples.find(s => s.name === this._excelImportSelecetedSampleName)
         for (let newVert of selectedSample.verts) {
-            if (!this.validateVertex(newVert, false))
+            if (!this.validateVertex(newVert, false)) {
                 this._dialogService.alert("Тест содержит неверное условие!", "Ок", "Ошибка");
-            else
+                return;
+            } else
                 this._verticesTableModel.data.push(newVert.copy());
         }
 
         for (let newArc of selectedSample.arcs) {
-            if (!this.validateArc(newArc, false))
+            if (!this.validateArc(newArc, false)) {
                 this._dialogService.alert("Тест содержит неверное условие!", "Ок", "Ошибка");
-            else
+                this._verticesTableModel.data = [];
+                return;
+            } else
                 this._arcsTableModel.data.push(newArc.copy());
         }
 
@@ -537,7 +540,7 @@ export class TransportationProblem {
             this._network = newNetwork;
             this.initAnswerTable();
             this.renderAnswerGraph();
-            this._dialogService.alert("Оптимальный план перевозок построен!", "Ок", "Успех");
+            this._dialogService.alert("Оптимальный план перевозок построен!", "Ок", "Решение получено");
         }
         catch (error) {
             this._dialogService.alert(error, "Ок", "Ошибка");

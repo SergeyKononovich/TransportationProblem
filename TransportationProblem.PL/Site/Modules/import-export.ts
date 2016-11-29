@@ -187,7 +187,7 @@ export class ExcelJohnsonSchedulingProblemExport {
 
                 // get samples tasks
                 let taskCell: CellType = {
-                    r: sampleCell.r + 5,
+                    r: sampleCell.r + 3,
                     c: sampleCell.c + 1
                 };
                 while (true) {

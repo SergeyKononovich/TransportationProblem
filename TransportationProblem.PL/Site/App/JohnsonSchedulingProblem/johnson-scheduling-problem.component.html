@@ -28,9 +28,9 @@
                                    [(ngModel)]="_excelImportSelectedCellName"
                                    floating-label></mdl-textfield>
                     <mdl-select class="input-selector"
-                                *ngIf="_excelImportSelectedCellName"
+                                *ngIf="_excelImportSamples?.length > 0"
                                 [(ngModel)]="_excelImportSelecetedSampleName"
-                                placeholder="Страница">
+                                placeholder="Выберите тест">
                         <mdl-option [value]="null"><em>Отмена</em></mdl-option>
                         <mdl-option *ngFor="let c of _excelImportSamples" [value]="c.name">{{c.name}}</mdl-option>
                     </mdl-select>
