@@ -403,6 +403,24 @@ export class JohnsonSchedulingProblem {
 
         return 0;
     }
+    private setTimeForMachineAndTask(machine: string, task: string, time: number): void {
+        let machineTask = this._machineTasksTableModel.data.find((value: TableMachineTask) => {
+            return value.machine === machine && value.task === task;
+        });
+
+        if (time.toString() === '' || time < 0)
+            time = 0;
+
+        if (machineTask)
+            (machineTask as TableMachineTask).time = time.toString();
+        else {
+            let newMachineTask = new TableMachineTask();
+            newMachineTask.machine = machine;
+            newMachineTask.task = task;
+            newMachineTask.time = time.toString();
+            this._machineTasksTableModel.data.push(newMachineTask.copy());
+        }
+    }
     //// Condition area end
 
 

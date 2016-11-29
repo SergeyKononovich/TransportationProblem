@@ -114,6 +114,7 @@ export class TransportationProblem {
     //// Answer area
     private _network: Network;
     // Arcs area
+    private _totalSum: number;
     private _answerTableModel = new MdlDefaultTableModel([
         { key: 'source', name: 'Отправитель', sortable: true },
         { key: 'slink', name: 'Получатель', sortable: true },
@@ -536,6 +537,14 @@ export class TransportationProblem {
                 this._currentArcsInNetwork.push(arc);
                 newNetwork.addArc(arc);
             }
+
+            if (vertices.isEmpty() || this._currentArcsInNetwork.length === 0) {
+                this._network = null;
+                this.initAnswerTable();
+                this.renderAnswerGraph();
+                return;
+            }
+
             newNetwork.optimize();
             this._network = newNetwork;
             this.initAnswerTable();
@@ -552,6 +561,7 @@ export class TransportationProblem {
     //// Answer area
     // Vertecies area
     private initAnswerTable(): any {
+        this._totalSum = 0;
 
         this._answerTableModel.data = [];
         let els = this._currentArcsInNetwork.map((arc: Arc) => {
@@ -562,6 +572,8 @@ export class TransportationProblem {
             answer.rate = arc.rate.toString();
             answer.price = answer.flow * arc.rate;
             answer.selected = true;
+
+            this._totalSum += answer.price;
 
             return answer;
         })

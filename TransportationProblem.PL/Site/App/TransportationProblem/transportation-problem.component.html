@@ -141,6 +141,7 @@
                     <mdl-table-selectable class="arcs-table" mdl-shadow="2"
                                             [table-model]="_answerTableModel"
                                             (table-model-selectionChanged)="answerTableSelectionChanged($event)"></mdl-table-selectable>
+                    <mdl-layout-title class="arc-area-title" *ngIf="_currentArcsInNetwork && _currentArcsInNetwork.length > 0">Общая стоимость перевозок: {{_totalSum}}</mdl-layout-title>
                 </div>
             </div>
 

@@ -138,7 +138,7 @@
                                 </tr>
                                 <tr *ngFor="let m of _machinesTableModel.data">
                                     <td class="table-cell table-header table-machine-header">{{m.name}}</td>
-                                    <td class="table-cell" *ngFor="let t of _tasksTableModel.data">{{getTimeForMachineAndTask(m.name, t.name)}}</td>
+                                    <td class="table-cell" *ngFor="let t of _tasksTableModel.data"><input type="number" [value]="getTimeForMachineAndTask(m.name, t.name)" (input)="setTimeForMachineAndTask(m.name, t.name, $event.target.value)"></td>
                                 </tr>
                             </table>
                         </div>
@@ -166,8 +166,8 @@
             <div class="answer" mdl-shadow="4" *ngFor="let ans of _answer; let i=index">
                 <mdl-layout-title  class="answer-area-title">Решение {{i + 1}}</mdl-layout-title>
                 <div class="indicators-area">
-                    <mdl-layout-title class="indicator">Общее время выполнения - {{ans.AllTime}}</mdl-layout-title>
-                    <mdl-layout-title class="indicator">Общее время простоя - {{ans.Downtime}}</mdl-layout-title>
+                    <mdl-layout-title class="indicator">Общее время выполнения: {{ans.AllTime}}</mdl-layout-title>
+                    <mdl-layout-title class="indicator">Общее время простоя: {{ans.Downtime}}</mdl-layout-title>
                 </div>
                 <div class="tasks-downtime-area">
                     <mdl-layout-title  class="answer-area-title">Время простоя каждой машины:</mdl-layout-title>
