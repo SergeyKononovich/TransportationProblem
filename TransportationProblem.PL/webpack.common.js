@@ -85,8 +85,18 @@ module.exports = {
             {
                 test: /\.md$/,
                 loader: 'md'
+            },
+            {
+                test: /\.js$/,
+                exclude: /(node_modules|bower_components)/,
+                loader: 'transform-loader?brfs'
             }
-        ]
+        ],
+        postLoaders: [
+            {
+                loader: "transform-loader?brfs"
+            }
+]
     },
 
     plugins: [

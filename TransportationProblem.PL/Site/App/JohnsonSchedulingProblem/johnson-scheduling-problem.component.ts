@@ -4,7 +4,7 @@ import { Dictionary }                   from 'typescript-collections/dist/lib';
 import * as Arrays                      from 'typescript-collections/dist/lib/arrays';
 
 import { JohnsonTask, Machine, Task, Solution }   from '../../Modules/johnson-scheduling-problem';
-import { ExcelJohnsonSchedulingProblemExport, JohnsonSchedulingProblemSample } from '../../Modules/import-export';
+import { ExcelJohnsonSchedulingProblemImport, JohnsonSchedulingProblemSample } from '../../Modules/import-export';
 
 
 export class TableMachine implements IMdlTableModelItem {
@@ -123,7 +123,7 @@ export class JohnsonSchedulingProblem {
         reader.addEventListener("load", (event: any) => {
             let data = event.target.result;
             try {
-                let exporter = new ExcelJohnsonSchedulingProblemExport(data);
+                let exporter = new ExcelJohnsonSchedulingProblemImport(data);
                 this._excelImportSheetNames = exporter.GetSheetsNames();
                 this._excelImportSelectedSheetName = null;
                 this._excelImportSelectedCellName = null;
@@ -146,7 +146,7 @@ export class JohnsonSchedulingProblem {
 
         this._excelImportSelecetedSampleName = null;
 
-        let exporter = new ExcelJohnsonSchedulingProblemExport(this._excelImportFileData);
+        let exporter = new ExcelJohnsonSchedulingProblemImport(this._excelImportFileData);
         this._excelImportSamples = exporter.GetSamples(this._excelImportSelectedSheetName, this._excelImportSelectedCellName);
     }
     private importConditionFromExcel(): void {

@@ -1,6 +1,7 @@
 ﻿import { TableVertex, TableArc, TableAnswer } from '../App/TransportationProblem/transportation-problem.component';
 import { TableMachine, TableTask, TableMachineTask } from '../App/JohnsonSchedulingProblem/johnson-scheduling-problem.component';
 
+var fs = require('fs');
 var XLSX = require('xlsx');
 
 
@@ -20,7 +21,7 @@ export class JohnsonSchedulingProblemSample {
     machinesTasks: TableMachineTask[] = [];
 }
 
-export class ExcelTransportationProblemExport {
+export class ExcelTransportationProblemImport {
 
     private _workbook: any = null;
 
@@ -133,7 +134,7 @@ export class ExcelTransportationProblemExport {
     }
 }
 
-export class ExcelJohnsonSchedulingProblemExport {
+export class ExcelJohnsonSchedulingProblemImport {
 
     private _workbook: any = null;
 
@@ -246,5 +247,111 @@ export class ExcelJohnsonSchedulingProblemExport {
         }
 
         return samples;
+    }
+}
+
+export class ExcelTransportationProblemExport {
+    
+    public static SaveSample(sample: TransportationProblemSample): boolean {
+
+        if (!sample)
+            return false;
+
+
+        let sheetName = 'Sheet1';
+        let startCell = 'A1';
+        let workbook: any = {
+            SheetNames: [],
+            Sheets: {}
+        };
+        
+        XLSX.writeFile(workbook, 'sample.xlsx');
+
+        let worksheet = workbook.Sheets[sheetName];
+
+        try {
+            let sampleCell: CellType = XLSX.utils.decode_cell(startCell);
+            let sampleIndx = 0;
+            worksheet[XLSX.utils.encode_cell(sampleCell)] = new XLSX.Cell();
+            let cell = worksheet[XLSX.utils.encode_cell(sampleCell)];
+
+            // get samples name
+            cell.t = 's';
+            cell.v = sample.name;
+
+            // get samples vertices
+            let vertexCell: CellType = {
+                r: sampleCell.r + 1,
+                c: sampleCell.c + 1
+            };
+            let vertexCellName: string;
+            for (let vertex of sample.verts) {
+                // get vertex name
+                vertexCell.c += 1;
+                vertexCellName = XLSX.utils.encode_cell(vertexCell);
+                worksheet[vertexCellName] = new XLSX.Cell();
+                let vCell = worksheet[vertexCellName];
+                vCell.t = 's';
+                vCell.v = vertex.name;
+
+                // get vertex power
+                vertexCell.r += 1;
+                vertexCellName = XLSX.utils.encode_cell(vertexCell);
+                worksheet[vertexCellName] = new XLSX.Cell();
+                vCell = worksheet[vertexCellName];
+                vCell.t = 'n';
+                vCell.v = vertex.power = vCell.v;
+
+                // get vertex priority
+                vertexCell.r += 1;
+                vertexCellName = XLSX.utils.encode_cell(vertexCell);
+                worksheet[vertexCellName] = new XLSX.Cell();
+                vCell = worksheet[vertexCellName];
+                vCell.t = 's';
+                vCell.v = vertex.priority ? 'есть' : 'нет';
+
+                vertexCell.r -= 2;
+            }
+
+            // get samples arcs
+            let arcCell: CellType = {
+                r: sampleCell.r + 5,
+                c: sampleCell.c + 1
+            };
+            let arcCellName: string;
+            for (let arc of sample.arcs) {
+                // get arc source
+                arcCell.c += 1;
+                arcCellName = XLSX.utils.encode_cell(arcCell);
+                worksheet[arcCellName] = new XLSX.Cell();
+                let aCell = worksheet[arcCellName]
+                aCell.t = 's';
+                aCell.v = arc.source;
+
+                // get arc slink
+                arcCell.r += 1;
+                arcCellName = XLSX.utils.encode_cell(arcCell);
+                worksheet[arcCellName] = new XLSX.Cell();
+                aCell = worksheet[arcCellName]
+                aCell.t = 's';
+                aCell.v = arc.slink;
+
+                // get arc rate
+                arcCell.r += 1;
+                arcCellName = XLSX.utils.encode_cell(arcCell);
+                worksheet[arcCellName] = new XLSX.Cell();
+                aCell = worksheet[arcCellName]
+                aCell.t = 'n';
+                aCell.v = arc.rate;
+
+                arcCell.r -= 2;
+            }
+
+            XLSX.writeFile(workbook, 'sample.xlsx');
+        } catch (e) {
+            return false;
+        }
+
+        return true;
     }
 }

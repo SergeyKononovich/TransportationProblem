@@ -27,3 +27,6 @@ import { ResponsiveModule } from 'ng2-responsive';
 // graphdracula
 require('cytoscape');
 require('cytoscape-cose-bilkent/src');
+
+// xlsx parser
+require('xlsx');

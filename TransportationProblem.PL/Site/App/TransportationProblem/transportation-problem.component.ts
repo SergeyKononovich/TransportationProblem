@@ -1,13 +1,17 @@
 ﻿import { Component, ElementRef, ViewChild }    from '@angular/core';
 import { MdlDefaultTableModel, MdlDialogService, IMdlTableModelItem } from 'angular2-mdl';
-import { Dictionary, Set }           from 'typescript-collections/dist/lib';
+import { Dictionary, Set }      from 'typescript-collections/dist/lib';
 import * as Arrays              from 'typescript-collections/dist/lib/arrays';
+
 
 var Cytoscape = require('cytoscape');
 var regCose = require('cytoscape-cose-bilkent/src');
 
 import { Network, Vertex, Arc } from '../../Modules/transportation-problem';
-import { ExcelTransportationProblemExport, TransportationProblemSample } from '../../Modules/import-export';
+import {
+    ExcelTransportationProblemImport, TransportationProblemSample,
+    ExcelTransportationProblemExport
+}   from '../../Modules/import-export';
 
 
 export class TableVertex implements IMdlTableModelItem {
@@ -111,6 +115,18 @@ export class TransportationProblem {
     //// Condition area end
 
 
+    //// Export area
+    // Excel area
+    private _excelExportFileName: string = '';
+    private _excelExportFileData: any = null;
+    private _excelExportSheetNames: string[] = null;
+    private _excelExportSamples: TransportationProblemSample[] = null;
+    private _excelExportSelectedSheetName: string = null;
+    private _excelExportSelectedCellName: string = null;
+    private _excelExportSelecetedSampleName: string = null;
+    //// Export area end
+
+
     //// Answer area
     private _network: Network;
     // Arcs area
@@ -134,7 +150,7 @@ export class TransportationProblem {
 
 
     ngAfterViewInit(): void {
-
+        
         regCose(Cytoscape);
 
         this._conditionGraph = Cytoscape({
@@ -259,7 +275,7 @@ export class TransportationProblem {
         reader.addEventListener("load", (event: any) => {
             let data = event.target.result;
             try {
-                let exporter = new ExcelTransportationProblemExport(data);
+                let exporter = new ExcelTransportationProblemImport(data);
                 this._excelImportSheetNames = exporter.GetSheetsNames();
                 this._excelImportSelectedSheetName = null;
                 this._excelImportSelectedCellName = null;
@@ -282,7 +298,7 @@ export class TransportationProblem {
 
         this._excelImportSelecetedSampleName = null;
 
-        let exporter = new ExcelTransportationProblemExport(this._excelImportFileData);
+        let exporter = new ExcelTransportationProblemImport(this._excelImportFileData);
         this._excelImportSamples = exporter.GetSamples(this._excelImportSelectedSheetName, this._excelImportSelectedCellName);
     }
     private importConditionFromExcel(): void {
@@ -321,6 +337,7 @@ export class TransportationProblem {
         this._newVertex.priority = false;
     }
     private addNewVertex(): void {
+
         if (!this.validateNewVertex())
             return;
 
@@ -515,6 +532,30 @@ export class TransportationProblem {
         });
     }
     //// Condition area end
+
+
+    //// Export area
+    // Excel area
+    private exportConditionToExcel(): void {
+
+        let sample = new TransportationProblemSample();
+        sample.verts = [];
+        sample.arcs = [];
+        
+        for (let newVert of this._verticesTableModel.data) {
+            sample.verts.push((newVert as TableVertex).copy());
+        }
+
+        for (let newArc of this._arcsTableModel.data) {
+            sample.arcs.push((newArc as TableArc).copy());
+        }
+
+        if (ExcelTransportationProblemExport.SaveSample(sample))
+            this._dialogService.alert("Условие успешно экспортировано!", "Ок", "Экспорт завершен");
+        else
+            this._dialogService.alert("Возникла ошибка при экспорте!", "Ок", "Ошибка");
+    }
+    //// Export area end
 
 
     //// Calc area

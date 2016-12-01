@@ -6,9 +6,9 @@
             <div class="import-excel-area-container" mdl-shadow="4">
                 <mdl-layout-title class="import-excel-area-title">Excel</mdl-layout-title>
                 <div class="import-excel-area">
-                    <input #excelFileSelector class="file-selector" type="file" (change)="excelImportFileChanged($event)">
+                    <input #excelImportFileSelector class="file-selector" type="file" (change)="excelImportFileChanged($event)">
                     <button class="select-file-button" mdl-button mdl-button-type="raised" mdl-colored="primary" 
-                            (click)="excelFileSelector.click()">Выбрать файл</button>
+                            (click)="excelImportFileSelector.click()">Выбрать файл</button>
                     <mdl-layout-title class="select-file-button-label" *ngIf="_excelImportFileName">
                         - {{_excelImportFileName}}
                     </mdl-layout-title>
@@ -120,6 +120,22 @@
                 <button class="button" (click)="restructConditionGraph()" mdl-button mdl-button-type="raised">
                     Перестроить
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="export-area-container">
+        <mdl-layout-title class="export-area-title">Экспорт условия</mdl-layout-title>
+
+        <div class="export-area">
+            <div class="export-excel-area-container" mdl-shadow="4">
+                <mdl-layout-title class="export-excel-area-title">Excel</mdl-layout-title>
+                <div class="export-excel-area">
+                    <button class="export-sample-button" mdl-button mdl-button-type="raised" mdl-colored="primary"
+                            (click)="exportConditionToExcel()">
+                        Экспортировать условие
+                    </button>
+                </div>
             </div>
         </div>
     </div>
