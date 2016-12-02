@@ -1,8 +1,8 @@
 ﻿import { TableVertex, TableArc, TableAnswer } from '../App/TransportationProblem/transportation-problem.component';
 import { TableMachine, TableTask, TableMachineTask } from '../App/JohnsonSchedulingProblem/johnson-scheduling-problem.component';
 
-var fs = require('fs');
-var XLSX = require('xlsx');
+import * as XLSX from 'xlsx';
+//var XLSX = require('xlsx');
 
 
 type CellType = { r: number, c: number };
@@ -256,28 +256,26 @@ export class ExcelTransportationProblemExport {
 
         if (!sample)
             return false;
-
+        
 
         let sheetName = 'Sheet1';
         let startCell = 'A1';
-        let workbook: any = {
+        let workbook: XLSX.IWorkBook = {
             SheetNames: [],
-            Sheets: {}
+            Sheets: {},
+            Props: null
         };
-        
-        XLSX.writeFile(workbook, 'sample.xlsx');
+        let exportString = XLSX.write(workbook);
 
         let worksheet = workbook.Sheets[sheetName];
 
         try {
             let sampleCell: CellType = XLSX.utils.decode_cell(startCell);
-            let sampleIndx = 0;
-            worksheet[XLSX.utils.encode_cell(sampleCell)] = new XLSX.Cell();
-            let cell = worksheet[XLSX.utils.encode_cell(sampleCell)];
-
-            // get samples name
-            cell.t = 's';
-            cell.v = sample.name;
+            let cell: XLSX.IWorkSheetCell = {
+                t: 's',
+                v: sample.name
+            };
+            worksheet[startCell] = cell;
 
             // get samples vertices
             let vertexCell: CellType = {
@@ -289,10 +287,11 @@ export class ExcelTransportationProblemExport {
                 // get vertex name
                 vertexCell.c += 1;
                 vertexCellName = XLSX.utils.encode_cell(vertexCell);
-                worksheet[vertexCellName] = new XLSX.Cell();
-                let vCell = worksheet[vertexCellName];
-                vCell.t = 's';
-                vCell.v = vertex.name;
+                let vCell: XLSX.IWorkSheetCell = {
+                    t: 's',
+                    v: vertex.name
+                };
+                worksheet[vertexCellName] = vCell;
 
                 // get vertex power
                 vertexCell.r += 1;
@@ -300,7 +299,7 @@ export class ExcelTransportationProblemExport {
                 worksheet[vertexCellName] = new XLSX.Cell();
                 vCell = worksheet[vertexCellName];
                 vCell.t = 'n';
-                vCell.v = vertex.power = vCell.v;
+                vCell.v = vertex.power;
 
                 // get vertex priority
                 vertexCell.r += 1;
