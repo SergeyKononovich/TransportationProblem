@@ -2,8 +2,6 @@
 import { TableMachine, TableTask, TableMachineTask } from '../App/JohnsonSchedulingProblem/johnson-scheduling-problem.component';
 
 import * as XLSX from 'xlsx';
-//var XLSX = require('xlsx');
-
 
 type CellType = { r: number, c: number };
 
@@ -251,7 +249,16 @@ export class ExcelJohnsonSchedulingProblemImport {
 }
 
 export class ExcelTransportationProblemExport {
+
     
+
+    public static s2ab(s:any) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    }
+
     public static SaveSample(sample: TransportationProblemSample): boolean {
 
         if (!sample)
@@ -261,11 +268,12 @@ export class ExcelTransportationProblemExport {
         let sheetName = 'Sheet1';
         let startCell = 'A1';
         let workbook: XLSX.IWorkBook = {
-            SheetNames: [],
-            Sheets: {},
+            SheetNames: [sheetName],
+            Sheets: {
+                [sheetName]: { }
+            },
             Props: null
         };
-        let exportString = XLSX.write(workbook);
 
         let worksheet = workbook.Sheets[sheetName];
 
@@ -296,18 +304,20 @@ export class ExcelTransportationProblemExport {
                 // get vertex power
                 vertexCell.r += 1;
                 vertexCellName = XLSX.utils.encode_cell(vertexCell);
-                worksheet[vertexCellName] = new XLSX.Cell();
-                vCell = worksheet[vertexCellName];
-                vCell.t = 'n';
-                vCell.v = vertex.power;
+                vCell = {
+                    t: 'n',
+                    v: vertex.power
+                };
+                worksheet[vertexCellName] = vCell;
 
                 // get vertex priority
                 vertexCell.r += 1;
                 vertexCellName = XLSX.utils.encode_cell(vertexCell);
-                worksheet[vertexCellName] = new XLSX.Cell();
-                vCell = worksheet[vertexCellName];
-                vCell.t = 's';
-                vCell.v = vertex.priority ? 'есть' : 'нет';
+                vCell = {
+                    t: 's',
+                    v: vertex.priority ? 'есть' : 'нет'
+                };
+                worksheet[vertexCellName] = vCell;
 
                 vertexCell.r -= 2;
             }
@@ -322,31 +332,39 @@ export class ExcelTransportationProblemExport {
                 // get arc source
                 arcCell.c += 1;
                 arcCellName = XLSX.utils.encode_cell(arcCell);
-                worksheet[arcCellName] = new XLSX.Cell();
-                let aCell = worksheet[arcCellName]
-                aCell.t = 's';
-                aCell.v = arc.source;
+                let aCell: XLSX.IWorkSheetCell = {
+                    t: 's',
+                    v: arc.source
+                };
+                worksheet[vertexCellName] = aCell;
 
                 // get arc slink
                 arcCell.r += 1;
                 arcCellName = XLSX.utils.encode_cell(arcCell);
-                worksheet[arcCellName] = new XLSX.Cell();
-                aCell = worksheet[arcCellName]
-                aCell.t = 's';
-                aCell.v = arc.slink;
+                aCell = {
+                    t: 's',
+                    v: arc.slink
+                };
+                worksheet[vertexCellName] = aCell;
 
                 // get arc rate
                 arcCell.r += 1;
                 arcCellName = XLSX.utils.encode_cell(arcCell);
-                worksheet[arcCellName] = new XLSX.Cell();
-                aCell = worksheet[arcCellName]
-                aCell.t = 'n';
-                aCell.v = arc.rate;
+                aCell = {
+                    t: 'n',
+                    v: arc.rate
+                };
+                worksheet[vertexCellName] = aCell;
 
                 arcCell.r -= 2;
             }
 
-            XLSX.writeFile(workbook, 'sample.xlsx');
+            let data = XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' });
+            var blob = new Blob([ExcelTransportationProblemExport.s2ab(data)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            var url = window.URL.createObjectURL(blob);
+            window.open(url);
+            
+
         } catch (e) {
             return false;
         }

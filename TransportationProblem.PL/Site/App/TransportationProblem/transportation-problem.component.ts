@@ -306,7 +306,7 @@ export class TransportationProblem {
         this._verticesTableModel.data = [];
         this._arcsTableModel.data = [];
 
-        let selectedSample = this._excelImportSamples.find(s => s.name === this._excelImportSelecetedSampleName)
+        let selectedSample = this._excelImportSamples.find(s => s.name === this._excelImportSelecetedSampleName);
         for (let newVert of selectedSample.verts) {
             if (!this.validateVertex(newVert, false)) {
                 this._dialogService.alert("Тест содержит неверное условие!", "Ок", "Ошибка");

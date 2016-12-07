@@ -12,11 +12,6 @@ import 'rxjs/Rx';
 // typescript-collections
 import 'typescript-collections/dist/lib';
 
-// PrimeNG
-import '../node_modules/primeng/resources/themes/omega/theme.css';
-import '../node_modules/primeng/resources/primeng.min.css';
-import 'primeng/primeng';
-
 // angular2-mdl
 import { MdlModule }        from 'angular2-mdl';
 import { MdlSelectModule }  from '@angular2-mdl-ext/select';
@@ -29,4 +24,4 @@ require('cytoscape');
 require('cytoscape-cose-bilkent/src');
 
 // xlsx parser
-require('xlsx');
+import 'xlsx';

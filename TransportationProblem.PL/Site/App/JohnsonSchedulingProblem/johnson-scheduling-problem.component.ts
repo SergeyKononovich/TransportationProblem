@@ -155,7 +155,7 @@ export class JohnsonSchedulingProblem {
         this._tasksTableModel.data = [];
         this._machineTasksTableModel.data = [];
 
-        let selectedSample = this._excelImportSamples.find(s => s.name === this._excelImportSelecetedSampleName)
+        let selectedSample = this._excelImportSamples.find(s => s.name === this._excelImportSelecetedSampleName);
         for (let newMachine of selectedSample.machines) {
             if (!this.validateMachine(newMachine, false)) {
                 this._dialogService.alert("Тест содержит неверное условие!", "Ок", "Ошибка");
